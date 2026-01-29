@@ -1,0 +1,14 @@
+fastapi
+uvicorn[standard]
+sqlmodel
+pydantic
+psycopg2-binary
+alembic
+celery
+redis
+python-multipart
+requests
+beautifulsoup4
+fake-useragent
+pyjwt
+

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      width: 320px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      margin: 0;
+    }
+    h1 {
+      font-size: 16px;
+      margin: 0 0 12px 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo { font-size: 20px; }
+    .status {
+      background: rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      font-size: 13px;
+    }
+    .status.error { background: rgba(255,100,100,0.3); }
+    .status.success { background: rgba(100,255,150,0.3); }
+    .data-preview {
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    .data-preview div { margin-bottom: 6px; }
+    .data-preview span { opacity: 0.7; }
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    #extractBtn {
+      background: white;
+      color: #667eea;
+    }
+    #extractBtn:hover { transform: scale(1.02); }
+    #extractBtn:disabled { opacity: 0.5; cursor: not-allowed; }
+    #sendBtn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      margin-top: 8px;
+      border: 1px solid rgba(255,255,255,0.3);
+    }
+    #sendBtn:hover { background: rgba(255,255,255,0.3); }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h1><span class="logo">🔗</span> ConnectionPro</h1>
+  
+  <div id="status" class="status">
+    Navigate to a LinkedIn profile and click Extract.
+  </div>
+  
+  <div id="preview" class="data-preview hidden">
+    <div><span>Name:</span> <strong id="prevName">-</strong></div>
+    <div><span>Role:</span> <strong id="prevRole">-</strong></div>
+    <div><span>Company:</span> <strong id="prevCompany">-</strong></div>
+    <div><span>Location:</span> <strong id="prevLocation">-</strong></div>
+  </div>
+  
+  <button id="extractBtn">Extract Profile Data</button>
+  <button id="sendBtn" class="hidden">Send to ConnectionPro</button>
+  
+  <script src="popup.js"></script>
+</body>
+</html>

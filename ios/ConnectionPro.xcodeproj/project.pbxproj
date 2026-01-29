@@ -1,0 +1,800 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B0001001 /* ConnectionProApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0001000; };
+		B0001003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0001002; };
+		B0001005 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0001004; };
+		B0002001 /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002000; };
+		B0002003 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002002; };
+		B0002005 /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002004; };
+		B0003001 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003000; };
+		B0003003 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003002; };
+		B0003005 /* ConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003004; };
+		B0003007 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003006; };
+		B0003009 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003008; };
+		B0004001 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004000; };
+		B0004003 /* APIEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004002; };
+		B0004005 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004004; };
+		B0005001 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0005000; };
+		B0006001 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006000; };
+		B0006003 /* ConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006002; };
+		B0006005 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006004; };
+		B0006007 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006006; };
+		B0007001 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007000; };
+		B0007003 /* ConnectionDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007002; };
+		B0007005 /* ConnectionFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007004; };
+		B0007007 /* ConnectionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007006; };
+		B0007009 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007008; };
+		B0007011 /* QuickAddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007010; };
+		B0007013 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007012; };
+		B0008001 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0008000; };
+		B0008003 /* VerifyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0008002; };
+		B0009001 /* ConnectionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009000; };
+		B0009003 /* ConnectionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009002; };
+		B0009005 /* ConnectionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009004; };
+		B0009007 /* LogFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009006; };
+		B0009009 /* TimelineItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009008; };
+		B0010001 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010000; };
+		B0010003 /* SmartRemindersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010002; };
+		B0010005 /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010004; };
+		B0011001 /* CadencePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011000; };
+		B0011003 /* ConnectionFormFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011002; };
+		B0011005 /* EditConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011004; };
+		B0011007 /* NewConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011006; };
+		B0011009 /* QuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011008; };
+		B0011011 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011010; };
+		B0012001 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0012000; };
+		B0012003 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0012002; };
+		B0013001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0013000; };
+		B0014001 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014000; };
+		B0014003 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014002; };
+		B0014005 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014004; };
+		B0014007 /* StatusBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014006; };
+		B0020001 /* ConnectionStatusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020000; };
+		B0020003 /* KeychainServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020002; };
+		B0020005 /* AuthViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020004; };
+		B0020007 /* ConnectionListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020006; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B0030001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B0000001 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B0A00010;
+			remoteInfo = ConnectionPro;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B0P00010 /* ConnectionPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConnectionPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0P00020 /* ConnectionProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConnectionProTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0001000 /* ConnectionProApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionProApp.swift; sourceTree = "<group>"; };
+		B0001002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B0001004 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		B0002000 /* Color+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Extensions.swift"; sourceTree = "<group>"; };
+		B0002002 /* Date+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extensions.swift"; sourceTree = "<group>"; };
+		B0002004 /* View+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Extensions.swift"; sourceTree = "<group>"; };
+		B0003000 /* AuthResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthResponse.swift; sourceTree = "<group>"; };
+		B0003002 /* Connection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Connection.swift; sourceTree = "<group>"; };
+		B0003004 /* ConnectionStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStatus.swift; sourceTree = "<group>"; };
+		B0003006 /* Log.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		B0003008 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		B0004000 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		B0004002 /* APIEndpoints.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoints.swift; sourceTree = "<group>"; };
+		B0004004 /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		B0005000 /* PreviewData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewData.swift; sourceTree = "<group>"; };
+		B0006000 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
+		B0006002 /* ConnectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionService.swift; sourceTree = "<group>"; };
+		B0006004 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		B0006006 /* LogService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogService.swift; sourceTree = "<group>"; };
+		B0007000 /* AuthViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModel.swift; sourceTree = "<group>"; };
+		B0007002 /* ConnectionDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionDetailViewModel.swift; sourceTree = "<group>"; };
+		B0007004 /* ConnectionFormViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionFormViewModel.swift; sourceTree = "<group>"; };
+		B0007006 /* ConnectionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListViewModel.swift; sourceTree = "<group>"; };
+		B0007008 /* DashboardViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardViewModel.swift; sourceTree = "<group>"; };
+		B0007010 /* QuickAddViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddViewModel.swift; sourceTree = "<group>"; };
+		B0007012 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		B0008000 /* RegisterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegisterView.swift; sourceTree = "<group>"; };
+		B0008002 /* VerifyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerifyView.swift; sourceTree = "<group>"; };
+		B0009000 /* ConnectionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionDetailView.swift; sourceTree = "<group>"; };
+		B0009002 /* ConnectionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListView.swift; sourceTree = "<group>"; };
+		B0009004 /* ConnectionRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionRowView.swift; sourceTree = "<group>"; };
+		B0009006 /* LogFormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogFormView.swift; sourceTree = "<group>"; };
+		B0009008 /* TimelineItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineItemView.swift; sourceTree = "<group>"; };
+		B0010000 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
+		B0010002 /* SmartRemindersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SmartRemindersView.swift; sourceTree = "<group>"; };
+		B0010004 /* StatCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatCardView.swift; sourceTree = "<group>"; };
+		B0011000 /* CadencePickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CadencePickerView.swift; sourceTree = "<group>"; };
+		B0011002 /* ConnectionFormFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionFormFields.swift; sourceTree = "<group>"; };
+		B0011004 /* EditConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditConnectionView.swift; sourceTree = "<group>"; };
+		B0011006 /* NewConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewConnectionView.swift; sourceTree = "<group>"; };
+		B0011008 /* QuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddView.swift; sourceTree = "<group>"; };
+		B0011010 /* TagPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TagPickerView.swift; sourceTree = "<group>"; };
+		B0012000 /* AppRootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRootView.swift; sourceTree = "<group>"; };
+		B0012002 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		B0013000 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		B0014000 /* AvatarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarView.swift; sourceTree = "<group>"; };
+		B0014002 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
+		B0014004 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		B0014006 /* StatusBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadgeView.swift; sourceTree = "<group>"; };
+		B0020000 /* ConnectionStatusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStatusTests.swift; sourceTree = "<group>"; };
+		B0020002 /* KeychainServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainServiceTests.swift; sourceTree = "<group>"; };
+		B0020004 /* AuthViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModelTests.swift; sourceTree = "<group>"; };
+		B0020006 /* ConnectionListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListViewModelTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B0A00011 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0A00021 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B0G00000 = {
+			isa = PBXGroup;
+			children = (
+				B0G00100 /* ConnectionPro */,
+				B0G00200 /* ConnectionProTests */,
+				B0G00001 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B0G00001 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B0P00010 /* ConnectionPro.app */,
+				B0P00020 /* ConnectionProTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B0G00100 /* ConnectionPro */ = {
+			isa = PBXGroup;
+			children = (
+				B0G00101 /* App */,
+				B0G00102 /* Extensions */,
+				B0G00103 /* Models */,
+				B0G00104 /* Networking */,
+				B0G00105 /* Preview Content */,
+				B0G00106 /* Services */,
+				B0G00107 /* ViewModels */,
+				B0G00108 /* Views */,
+				B0001002 /* Assets.xcassets */,
+			);
+			path = ConnectionPro;
+			sourceTree = "<group>";
+		};
+		B0G00101 /* App */ = {
+			isa = PBXGroup;
+			children = (
+				B0001000 /* ConnectionProApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		B0G00102 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B0002000 /* Color+Extensions.swift */,
+				B0002002 /* Date+Extensions.swift */,
+				B0002004 /* View+Extensions.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		B0G00103 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B0003000 /* AuthResponse.swift */,
+				B0003002 /* Connection.swift */,
+				B0003004 /* ConnectionStatus.swift */,
+				B0003006 /* Log.swift */,
+				B0003008 /* User.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B0G00104 /* Networking */ = {
+			isa = PBXGroup;
+			children = (
+				B0004000 /* APIClient.swift */,
+				B0004002 /* APIEndpoints.swift */,
+				B0004004 /* APIError.swift */,
+			);
+			path = Networking;
+			sourceTree = "<group>";
+		};
+		B0G00105 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				B0005000 /* PreviewData.swift */,
+				B0001004 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		B0G00106 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B0006000 /* AuthService.swift */,
+				B0006002 /* ConnectionService.swift */,
+				B0006004 /* KeychainService.swift */,
+				B0006006 /* LogService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		B0G00107 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				B0007000 /* AuthViewModel.swift */,
+				B0007002 /* ConnectionDetailViewModel.swift */,
+				B0007004 /* ConnectionFormViewModel.swift */,
+				B0007006 /* ConnectionListViewModel.swift */,
+				B0007008 /* DashboardViewModel.swift */,
+				B0007010 /* QuickAddViewModel.swift */,
+				B0007012 /* SettingsViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		B0G00108 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				B0G00109 /* Auth */,
+				B0G00110 /* Connections */,
+				B0G00111 /* Dashboard */,
+				B0G00112 /* Forms */,
+				B0G00113 /* Navigation */,
+				B0G00114 /* Settings */,
+				B0G00115 /* Shared */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		B0G00109 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				B0008000 /* RegisterView.swift */,
+				B0008002 /* VerifyView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		B0G00110 /* Connections */ = {
+			isa = PBXGroup;
+			children = (
+				B0009000 /* ConnectionDetailView.swift */,
+				B0009002 /* ConnectionListView.swift */,
+				B0009004 /* ConnectionRowView.swift */,
+				B0009006 /* LogFormView.swift */,
+				B0009008 /* TimelineItemView.swift */,
+			);
+			path = Connections;
+			sourceTree = "<group>";
+		};
+		B0G00111 /* Dashboard */ = {
+			isa = PBXGroup;
+			children = (
+				B0010000 /* DashboardView.swift */,
+				B0010002 /* SmartRemindersView.swift */,
+				B0010004 /* StatCardView.swift */,
+			);
+			path = Dashboard;
+			sourceTree = "<group>";
+		};
+		B0G00112 /* Forms */ = {
+			isa = PBXGroup;
+			children = (
+				B0011000 /* CadencePickerView.swift */,
+				B0011002 /* ConnectionFormFields.swift */,
+				B0011004 /* EditConnectionView.swift */,
+				B0011006 /* NewConnectionView.swift */,
+				B0011008 /* QuickAddView.swift */,
+				B0011010 /* TagPickerView.swift */,
+			);
+			path = Forms;
+			sourceTree = "<group>";
+		};
+		B0G00113 /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				B0012000 /* AppRootView.swift */,
+				B0012002 /* MainTabView.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		B0G00114 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				B0013000 /* SettingsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		B0G00115 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				B0014000 /* AvatarView.swift */,
+				B0014002 /* EmptyStateView.swift */,
+				B0014004 /* LoadingView.swift */,
+				B0014006 /* StatusBadgeView.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		B0G00200 /* ConnectionProTests */ = {
+			isa = PBXGroup;
+			children = (
+				B0G00201 /* Models */,
+				B0G00202 /* Services */,
+				B0G00203 /* ViewModels */,
+			);
+			path = ConnectionProTests;
+			sourceTree = "<group>";
+		};
+		B0G00201 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				B0020000 /* ConnectionStatusTests.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		B0G00202 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B0020002 /* KeychainServiceTests.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		B0G00203 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				B0020004 /* AuthViewModelTests.swift */,
+				B0020006 /* ConnectionListViewModelTests.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B0A00010 /* ConnectionPro */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0C00030 /* Build configuration list for PBXNativeTarget "ConnectionPro" */;
+			buildPhases = (
+				B0A00012 /* Sources */,
+				B0A00011 /* Frameworks */,
+				B0A00013 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ConnectionPro;
+			productName = ConnectionPro;
+			productReference = B0P00010 /* ConnectionPro.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B0A00020 /* ConnectionProTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0C00040 /* Build configuration list for PBXNativeTarget "ConnectionProTests" */;
+			buildPhases = (
+				B0A00022 /* Sources */,
+				B0A00021 /* Frameworks */,
+				B0A00023 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B0030002 /* PBXTargetDependency */,
+			);
+			name = ConnectionProTests;
+			productName = ConnectionProTests;
+			productReference = B0P00020 /* ConnectionProTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B0000001 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					B0A00010 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+					B0A00020 = {
+						CreatedOnToolsVersion = 15.0;
+						TestTargetID = B0A00010;
+					};
+				};
+			};
+			buildConfigurationList = B0C00002 /* Build configuration list for PBXProject "ConnectionPro" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B0G00000;
+			productRefGroup = B0G00001 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B0A00010 /* ConnectionPro */,
+				B0A00020 /* ConnectionProTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B0A00013 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0001005 /* Preview Assets.xcassets in Resources */,
+				B0001003 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0A00023 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B0A00012 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0001001 /* ConnectionProApp.swift in Sources */,
+				B0002001 /* Color+Extensions.swift in Sources */,
+				B0002003 /* Date+Extensions.swift in Sources */,
+				B0002005 /* View+Extensions.swift in Sources */,
+				B0003001 /* AuthResponse.swift in Sources */,
+				B0003003 /* Connection.swift in Sources */,
+				B0003005 /* ConnectionStatus.swift in Sources */,
+				B0003007 /* Log.swift in Sources */,
+				B0003009 /* User.swift in Sources */,
+				B0004001 /* APIClient.swift in Sources */,
+				B0004003 /* APIEndpoints.swift in Sources */,
+				B0004005 /* APIError.swift in Sources */,
+				B0005001 /* PreviewData.swift in Sources */,
+				B0006001 /* AuthService.swift in Sources */,
+				B0006003 /* ConnectionService.swift in Sources */,
+				B0006005 /* KeychainService.swift in Sources */,
+				B0006007 /* LogService.swift in Sources */,
+				B0007001 /* AuthViewModel.swift in Sources */,
+				B0007003 /* ConnectionDetailViewModel.swift in Sources */,
+				B0007005 /* ConnectionFormViewModel.swift in Sources */,
+				B0007007 /* ConnectionListViewModel.swift in Sources */,
+				B0007009 /* DashboardViewModel.swift in Sources */,
+				B0007011 /* QuickAddViewModel.swift in Sources */,
+				B0007013 /* SettingsViewModel.swift in Sources */,
+				B0008001 /* RegisterView.swift in Sources */,
+				B0008003 /* VerifyView.swift in Sources */,
+				B0009001 /* ConnectionDetailView.swift in Sources */,
+				B0009003 /* ConnectionListView.swift in Sources */,
+				B0009005 /* ConnectionRowView.swift in Sources */,
+				B0009007 /* LogFormView.swift in Sources */,
+				B0009009 /* TimelineItemView.swift in Sources */,
+				B0010001 /* DashboardView.swift in Sources */,
+				B0010003 /* SmartRemindersView.swift in Sources */,
+				B0010005 /* StatCardView.swift in Sources */,
+				B0011001 /* CadencePickerView.swift in Sources */,
+				B0011003 /* ConnectionFormFields.swift in Sources */,
+				B0011005 /* EditConnectionView.swift in Sources */,
+				B0011007 /* NewConnectionView.swift in Sources */,
+				B0011009 /* QuickAddView.swift in Sources */,
+				B0011011 /* TagPickerView.swift in Sources */,
+				B0012001 /* AppRootView.swift in Sources */,
+				B0012003 /* MainTabView.swift in Sources */,
+				B0013001 /* SettingsView.swift in Sources */,
+				B0014001 /* AvatarView.swift in Sources */,
+				B0014003 /* EmptyStateView.swift in Sources */,
+				B0014005 /* LoadingView.swift in Sources */,
+				B0014007 /* StatusBadgeView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0A00022 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0020001 /* ConnectionStatusTests.swift in Sources */,
+				B0020003 /* KeychainServiceTests.swift in Sources */,
+				B0020005 /* AuthViewModelTests.swift in Sources */,
+				B0020007 /* ConnectionListViewModelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B0030002 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B0A00010 /* ConnectionPro */;
+			targetProxy = B0030001 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		B0C00003 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B0C00004 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B0C00031 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ConnectionPro/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ConnectionPro;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.connectionpro.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B0C00032 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ConnectionPro/Preview Content\"";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ConnectionPro;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.connectionpro.app;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B0C00041 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.connectionpro.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ConnectionPro.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ConnectionPro";
+			};
+			name = Debug;
+		};
+		B0C00042 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.connectionpro.tests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ConnectionPro.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ConnectionPro";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B0C00002 /* Build configuration list for PBXProject "ConnectionPro" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0C00003 /* Debug */,
+				B0C00004 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0C00030 /* Build configuration list for PBXNativeTarget "ConnectionPro" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0C00031 /* Debug */,
+				B0C00032 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0C00040 /* Build configuration list for PBXNativeTarget "ConnectionProTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0C00041 /* Debug */,
+				B0C00042 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B0000001 /* Project object */;
+}

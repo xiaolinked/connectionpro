@@ -1,0 +1,60 @@
+services:
+  server:
+    build: ./server
+    command: sh start.sh
+    volumes:
+      - ./server:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/connectionpro
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  worker:
+    build: ./server
+    command: celery -A worker.celery_app worker --loglevel=info
+    volumes:
+      - ./server:/app
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/connectionpro
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+
+  db:
+    image: postgres:15-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=connectionpro
+    ports:
+      - "5433:5432"
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    command: sh -c "npm ci && npm run dev -- --host"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - server
+
+volumes:
+  postgres_data:

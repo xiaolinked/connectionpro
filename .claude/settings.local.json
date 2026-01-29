@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(tree:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm install:*)",
+      "Bash(source:*)",
+      "Bash(pip install:*)",
+      "Bash(npx vitest run)",
+      "Bash(python -m pytest:*)",
+      "Bash(npx vitest:*)",
+      "Bash(find:*)",
+      "Bash(python3 -m pytest:*)",
+      "Bash(/Users/xiao/repos/ConnectionPro/server/venv/bin/python -m pytest:*)"
+    ]
+  }
+}

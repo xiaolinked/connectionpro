@@ -1,0 +1,89 @@
+# ===== General =====
+.DS_Store
+.env
+.env.local
+.env.*.local
+*.log
+*.swp
+*.swo
+*~
+
+# ===== Python (Server) =====
+server/__pycache__/
+server/*.pyc
+server/*.pyo
+server/*.pyd
+server/.Python
+server/venv/
+server/env/
+server/ENV/
+server/.pytest_cache/
+server/.coverage
+server/htmlcov/
+server/dist/
+server/build/
+server/*.egg-info/
+server/database.db
+server/*.db
+server/alembic/versions/*.py
+!server/alembic/versions/__init__.py
+
+# ===== Node.js (Client) =====
+client/node_modules/
+client/dist/
+client/build/
+client/.vite/
+client/.turbo/
+client/.next/
+client/out/
+client/.cache/
+client/*.tsbuildinfo
+client/npm-debug.log*
+client/yarn-debug.log*
+client/yarn-error.log*
+client/pnpm-debug.log*
+
+# ===== Extension =====
+extension/node_modules/
+extension/dist/
+extension/build/
+extension/*.pem
+extension/*.crx
+extension/*.zip
+
+# ===== iOS =====
+ios/Pods/
+ios/Podfile.lock
+ios/*.xcworkspace/xcuserdata/
+ios/*.xcodeproj/xcuserdata/
+ios/*.xcodeproj/project.xcworkspace/xcuserdata/
+ios/DerivedData/
+ios/build/
+ios/.build/
+ios/*.hmap
+ios/*.ipa
+ios/*.dSYM.zip
+ios/*.dSYM
+ios/.swiftpm/
+ios/Package.resolved
+
+# ===== IDEs & Editors =====
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.clauderc
+
+# ===== Testing =====
+coverage/
+.nyc_output/
+*.lcov
+
+# ===== Docker =====
+*.db-journal
+
+# ===== Misc =====
+.gemini/
+node_modules/
+*.pid
+.brain/
