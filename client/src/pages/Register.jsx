@@ -92,35 +92,34 @@ const Register = () => {
                 animation: 'slideUp 0.6s ease-out'
             }}>
                 {/* Logo and Title */}
-                <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
+                <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
                     <div style={{
-                        width: '60px',
-                        height: '60px',
-                        background: 'linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.9) 100%)',
+                        width: '64px',
+                        height: '64px',
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
                         borderRadius: '16px',
-                        margin: '0 auto 1.5rem',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        boxShadow: '0 10px 40px rgba(0,0,0,0.2)'
+                        margin: '0 auto 1.5rem',
+                        boxShadow: '0 10px 25px rgba(102, 126, 234, 0.4)'
                     }}>
-                        <Network size={32} color="#667eea" />
+                        <Network size={32} color="white" />
                     </div>
                     <h1 style={{
                         fontSize: '2.5rem',
                         fontWeight: '800',
-                        color: 'white',
+                        color: '#1f2937',
                         marginBottom: '0.5rem',
-                        textShadow: '0 2px 20px rgba(0,0,0,0.2)'
+                        letterSpacing: '-0.5px'
                     }}>
-                        ConnectionPro
+                        Kithly
                     </h1>
                     <p style={{
-                        fontSize: '1.125rem',
-                        color: 'rgba(255,255,255,0.9)',
-                        fontWeight: '400'
+                        color: '#6b7280',
+                        fontSize: '1.125rem'
                     }}>
-                        Build meaningful professional relationships
+                        Your professional network, supercharged
                     </p>
                 </div>
 

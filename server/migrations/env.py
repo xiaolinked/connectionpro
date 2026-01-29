@@ -34,10 +34,16 @@ def run_migrations_offline() -> None:
         context.run_migrations()
 
 def run_migrations_online() -> None:
+    from sqlalchemy import create_engine
+    
+    # Get URL and fix Postgres dialect name
+    connection_url = url or config.get_main_option("sqlalchemy.url")
+    if connection_url and connection_url.startswith("postgres://"):
+        connection_url = connection_url.replace("postgres://", "postgresql://", 1)
+    
     connectable = config.attributes.get("connection", None)
     if connectable is None:
-        from sqlmodel import create_engine
-        connectable = create_engine(url)
+        connectable = create_engine(connection_url)
 
     with connectable.connect() as connection:
         context.configure(

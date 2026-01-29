@@ -21,7 +21,7 @@ describe('Register', () => {
 
     it('renders the email step by default', () => {
         render(<Register />);
-        expect(screen.getByText('Welcome to ConnectionPro')).toBeInTheDocument();
+        expect(screen.getByText('Kithly')).toBeInTheDocument();
         expect(screen.getByPlaceholderText('john@example.com')).toBeInTheDocument();
         expect(screen.getByText('Next')).toBeInTheDocument();
     });

@@ -31,10 +31,16 @@ async def get_current_user(
     return user
 
 # CORS Setup
+import os
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+# Add production frontend URL from environment variable
+frontend_url = os.getenv("FRONTEND_URL")
+if frontend_url:
+    origins.append(frontend_url)
 
 app.add_middleware(
     CORSMiddleware,
@@ -75,11 +81,12 @@ def register(user_data: UserCreate, session: Session = Depends(get_session)):
         session.commit()
         session.refresh(user)
     
-    # Generate magic link token
+    # Create magic link token
     token = create_magic_link_token(user.email)
     
-    # MOCK: In a real app, this would send an email. For now, we log it and return it for the demo.
-    magic_link = f"http://localhost:5173/verify?token={token}"
+    # Get frontend URL from environment (fallback to localhost for development)
+    frontend_url = os.getenv("FRONTEND_URL", "http://localhost:5173")
+    magic_link = f"{frontend_url}/verify?token={token}"
     print(f"MAGIC LINK FOR {user.email}: {magic_link}")
     
     return {"message": "Magic link generated", "magic_link": magic_link}
