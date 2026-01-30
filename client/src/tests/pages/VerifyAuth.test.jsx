@@ -40,7 +40,7 @@ describe('VerifyAuth', () => {
 
     it('shows verifying state initially', () => {
         useSearchParams.mockReturnValue([new URLSearchParams('?token=abc')]);
-        api.verifyMagicLink.mockReturnValue(new Promise(() => {})); // never resolves
+        api.verifyMagicLink.mockReturnValue(new Promise(() => { })); // never resolves
 
         render(
             <MemoryRouter>
@@ -113,5 +113,29 @@ describe('VerifyAuth', () => {
         await waitFor(() => {
             expect(screen.getByText('Return to Login')).toBeInTheDocument();
         });
+    });
+    it('verifies fix: shows stringified error when error detail is not a string (e.g. 422 validation)', async () => {
+        useSearchParams.mockReturnValue([new URLSearchParams('?token=bad-format')]);
+        // Simulate what happens when api.fetch throws with a non-string detail
+        // We manually construct the error as if api.js did it (it now stringifies)
+        const detail = [{ loc: ['body'], msg: 'required' }];
+        const validationError = new Error(JSON.stringify(detail));
+
+        api.verifyMagicLink.mockRejectedValueOnce(validationError);
+
+        render(
+            <MemoryRouter>
+                <VerifyAuth />
+            </MemoryRouter>
+        );
+
+        await waitFor(() => {
+            expect(screen.getByText('Authentication Failed')).toBeInTheDocument();
+        });
+
+        // Should NOT show [object Object]
+        expect(screen.queryByText(/object Object/)).not.toBeInTheDocument();
+        // Should show the stringified JSON
+        expect(screen.getByText(JSON.stringify(detail))).toBeInTheDocument();
     });
 });

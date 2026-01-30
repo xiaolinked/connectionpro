@@ -7,9 +7,9 @@ final class APIClient: Sendable {
     let baseURL: String
 
     private init() {
-        // Use the CONNECTIONPRO_API_URL environment variable if set, otherwise default
+        // Use the CONNECTIONPRO_API_URL environment variable if set, otherwise default to production
         self.baseURL = ProcessInfo.processInfo.environment["CONNECTIONPRO_API_URL"]
-            ?? "http://localhost:8000"
+            ?? "https://connectionpro-api.fly.dev"
     }
 
     // Custom JSON decoder that handles the backend's datetime formats

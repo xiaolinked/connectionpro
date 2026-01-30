@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="rg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a2744"/>
+      <stop offset="100%" stop-color="#c49a3c"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="64" fill="#e8edf2"/>
+  <circle cx="256" cy="256" r="190" fill="none" stroke="url(#rg)" stroke-width="50"/>
+  <circle cx="256" cy="256" r="163" fill="#f0f3f8"/>
+  <g fill="none" stroke="#1a2744" stroke-width="2.5" opacity="0.7">
+    <line x1="256" y1="150" x2="200" y2="200"/>
+    <line x1="256" y1="150" x2="310" y2="195"/>
+    <line x1="200" y1="200" x2="180" y2="270"/>
+    <line x1="200" y1="200" x2="260" y2="230"/>
+    <line x1="310" y1="195" x2="260" y2="230"/>
+    <line x1="310" y1="195" x2="330" y2="265"/>
+    <line x1="180" y1="270" x2="220" y2="330"/>
+    <line x1="180" y1="270" x2="260" y2="230"/>
+    <line x1="260" y1="230" x2="330" y2="265"/>
+    <line x1="260" y1="230" x2="220" y2="330"/>
+    <line x1="260" y1="230" x2="300" y2="320"/>
+    <line x1="330" y1="265" x2="300" y2="320"/>
+    <line x1="220" y1="330" x2="256" y2="365"/>
+    <line x1="300" y1="320" x2="256" y2="365"/>
+    <line x1="220" y1="330" x2="300" y2="320"/>
+    <line x1="200" y1="200" x2="310" y2="195"/>
+    <line x1="180" y1="270" x2="330" y2="265"/>
+  </g>
+  <g fill="#1a2744">
+    <circle cx="256" cy="150" r="10"/>
+    <circle cx="200" cy="200" r="9"/>
+    <circle cx="310" cy="195" r="9"/>
+    <circle cx="180" cy="270" r="8"/>
+    <circle cx="260" cy="230" r="10"/>
+    <circle cx="330" cy="265" r="8"/>
+    <circle cx="220" cy="330" r="8"/>
+    <circle cx="300" cy="320" r="8"/>
+    <circle cx="256" cy="365" r="9"/>
+  </g>
+</svg>

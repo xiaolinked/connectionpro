@@ -4,6 +4,13 @@ import Layout from '../../components/layout/Layout';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
+// Mock AuthContext
+vi.mock('../../context/AuthContext', () => ({
+    useAuth: () => ({
+        logout: vi.fn(),
+    }),
+}));
+
 function renderLayout(route = '/') {
     return render(
         <MemoryRouter initialEntries={[route]}>
@@ -23,18 +30,14 @@ describe('Layout', () => {
 
     it('renders sidebar with app name', () => {
         renderLayout();
-        // The sidebar has "Connection" text and a "Pro" span
-        expect(screen.getByText('Pro')).toBeInTheDocument();
-        const heading = screen.getByText('Pro').closest('h2');
-        expect(heading).toBeInTheDocument();
-        expect(heading.textContent).toContain('Connection');
+        expect(screen.getByText('ConnectionPro')).toBeInTheDocument();
     });
 
     it('renders navigation links', () => {
         renderLayout();
         expect(screen.getByText('Dashboard')).toBeInTheDocument();
-        expect(screen.getByText('Connections')).toBeInTheDocument();
-        expect(screen.getByText('Add New')).toBeInTheDocument();
+        expect(screen.getByText('Network')).toBeInTheDocument();
+        expect(screen.getByText('Add Connection')).toBeInTheDocument();
         expect(screen.getByText('Settings')).toBeInTheDocument();
     });
 
@@ -44,7 +47,7 @@ describe('Layout', () => {
         const hrefs = links.map((l) => l.getAttribute('href'));
         expect(hrefs).toContain('/');
         expect(hrefs).toContain('/connections');
-        expect(hrefs).toContain('/add');
+        expect(hrefs).toContain('/connections/new');
         expect(hrefs).toContain('/settings');
     });
 
@@ -56,7 +59,7 @@ describe('Layout', () => {
 
     it('highlights active Connections link on /connections', () => {
         renderLayout('/connections');
-        const connectionsLink = screen.getByText('Connections').closest('a');
+        const connectionsLink = screen.getByText('Network').closest('a');
         expect(connectionsLink.className).toContain('active');
     });
 });

@@ -11,7 +11,9 @@
       "Bash(npx vitest:*)",
       "Bash(find:*)",
       "Bash(python3 -m pytest:*)",
-      "Bash(/Users/xiao/repos/ConnectionPro/server/venv/bin/python -m pytest:*)"
+      "Bash(/Users/xiao/repos/ConnectionPro/server/venv/bin/python -m pytest:*)",
+      "Bash(python3:*)",
+      "Bash(pip3 install:*)"
     ]
   }
 }

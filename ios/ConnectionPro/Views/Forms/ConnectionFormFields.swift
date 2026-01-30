@@ -12,6 +12,9 @@ struct ConnectionFormFields: View {
     @Binding var goals: String
     @Binding var tags: [String]
     @Binding var frequency: Int
+    
+    // Available tags for the picker
+    var availableTags: [String: [TagDefinition]] = [:]
 
     var body: some View {
         Form {
@@ -54,7 +57,7 @@ struct ConnectionFormFields: View {
 
             // Tags
             Section {
-                TagPickerView(selectedTags: $tags)
+                MultiCategoryTagPicker(selectedTags: $tags, availableTags: availableTags)
             }
 
             // Cadence

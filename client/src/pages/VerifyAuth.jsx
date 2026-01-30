@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
@@ -10,9 +10,14 @@ const VerifyAuth = () => {
     const { login } = useAuth();
     const [error, setError] = useState('');
     const [status, setStatus] = useState('verifying'); // verifying, success, error
+    const hasVerified = useRef(false);
 
     useEffect(() => {
         const verifyToken = async () => {
+            // Prevent multiple verification attempts
+            if (hasVerified.current) return;
+            hasVerified.current = true;
+
             const token = searchParams.get('token');
             if (!token) {
                 setError('No token provided');
@@ -26,7 +31,7 @@ const VerifyAuth = () => {
                 setStatus('success');
                 // Brief delay to show success state before redirecting
                 setTimeout(() => {
-                    navigate('/');
+                    navigate('/', { replace: true });
                 }, 1000);
             } catch (err) {
                 console.error("Verification failed", err);
@@ -36,7 +41,7 @@ const VerifyAuth = () => {
         };
 
         verifyToken();
-    }, [searchParams, login, navigate]);
+    }, []);
 
     return (
         <div style={{ maxWidth: '400px', margin: '150px auto', textAlign: 'center' }} className="card">

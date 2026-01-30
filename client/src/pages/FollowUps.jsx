@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { getConnectionStatus } from '../utils/reminders';
-import { Calendar, Clock, AlertCircle, Users } from 'lucide-react';
+import { Calendar, Clock, AlertCircle, Users, Check, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const FollowUps = () => {
-    const { connections, isLoading } = useData();
+    const { connections, isLoading, addLog } = useData();
     const [activeSection, setActiveSection] = useState('overdue');
 
     if (isLoading) {
@@ -13,7 +13,6 @@ const FollowUps = () => {
     }
 
     // Categorize connections
-    const now = new Date();
     const categorized = {
         overdue: [],
         week: [],
@@ -54,6 +53,20 @@ const FollowUps = () => {
         { id: 'noSchedule', label: 'No Schedule', icon: Users, color: '#6b7280', count: categorized.noSchedule.length }
     ];
 
+    const handleAction = async (e, conn, type) => {
+        e.preventDefault(); // Prevent navigation
+        try {
+            await addLog({
+                connection_id: conn.id,
+                type: type === 'skip' ? 'skip' : 'interaction',
+                notes: type === 'skip' ? 'Skipped follow-up via dashboard' : 'Marked done via dashboard',
+                date: new Date().toISOString()
+            });
+        } catch (error) {
+            console.error('Failed to update follow-up', error);
+        }
+    };
+
     const renderConnectionList = (connections) => {
         if (connections.length === 0) {
             return (
@@ -64,52 +77,122 @@ const FollowUps = () => {
         }
 
         return (
-            <div style={{ display: 'grid', gap: '0.75rem' }}>
-                {connections.map(conn => {
-                    const { daysDiff } = getConnectionStatus(conn);
-                    const frequency = parseInt(conn.frequency) || 0;
-                    const daysUntilDue = frequency > 0 ? frequency - daysDiff : null;
+            <div style={{ overflowX: 'auto', backgroundColor: 'var(--color-bg-secondary)', borderRadius: '12px', padding: '1px' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', backgroundColor: 'var(--color-bg-primary)', borderRadius: '12px', overflow: 'hidden' }}>
+                    <thead>
+                        <tr style={{ backgroundColor: 'var(--color-bg-secondary)', borderBottom: '1px solid var(--color-border)' }}>
+                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Contact</th>
+                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Last Contact</th>
+                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Since Last Connect</th>
+                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Status</th>
+                            <th style={{ textAlign: 'right', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {connections.map(conn => {
+                            const { daysDiff } = getConnectionStatus(conn);
+                            const frequency = parseInt(conn.frequency) || 0;
+                            const daysUntilDue = frequency > 0 ? frequency - daysDiff : null;
 
-                    return (
-                        <Link
-                            key={conn.id}
-                            to={`/connections/${conn.id}`}
-                            className="card"
-                            style={{
-                                display: 'block',
-                                textDecoration: 'none',
-                                color: 'inherit',
-                                padding: '1rem',
-                                transition: 'background-color 0.2s'
-                            }}
-                            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)'}
-                            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--color-bg-primary)'}
-                        >
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <div>
-                                    <div style={{ fontWeight: '600', marginBottom: '0.25rem' }}>{conn.name}</div>
-                                    {conn.company && (
-                                        <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
-                                            {conn.role ? `${conn.role} at ${conn.company}` : conn.company}
+                            return (
+                                <tr key={conn.id} style={{ borderBottom: '1px solid var(--color-border)', transition: 'background-color 0.2s' }}>
+                                    <td style={{ padding: '1rem' }}>
+                                        <Link
+                                            to={`/connections/${conn.id}`}
+                                            style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
+                                        >
+                                            <div style={{ fontWeight: '600', color: 'var(--color-text-primary)' }}>{conn.name}</div>
+                                            {conn.company && (
+                                                <div style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
+                                                    {conn.role ? `${conn.role} at ${conn.company}` : conn.company}
+                                                </div>
+                                            )}
+                                        </Link>
+                                    </td>
+                                    <td style={{ padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
+                                        {conn.last_contact ? new Date(conn.last_contact).toLocaleDateString() : 'Never'}
+                                    </td>
+                                    <td style={{ padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
+                                        {conn.last_contact ? `${daysDiff} days ago` : '-'}
+                                    </td>
+                                    <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
+                                        {daysUntilDue !== null && (
+                                            <span style={{
+                                                color: daysUntilDue > 0 ? 'var(--color-text-secondary)' : '#ef4444',
+                                                fontWeight: daysUntilDue <= 0 ? '600' : '400'
+                                            }}>
+                                                {daysUntilDue > 0 ? `Due in ${daysUntilDue} days` : `${Math.abs(daysUntilDue)} days overdue`}
+                                            </span>
+                                        )}
+                                    </td>
+                                    <td style={{ padding: '1rem', textAlign: 'right' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem' }}>
+                                            <button
+                                                onClick={(e) => handleAction(e, conn, 'done')}
+                                                title="Mark as Done"
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    gap: '0.25rem',
+                                                    padding: '0.5rem 0.75rem',
+                                                    border: '1px solid #059669',
+                                                    borderRadius: '6px',
+                                                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                                                    color: '#059669',
+                                                    cursor: 'pointer',
+                                                    fontSize: '0.875rem',
+                                                    fontWeight: '600',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.backgroundColor = '#059669';
+                                                    e.currentTarget.style.color = 'white';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.backgroundColor = 'rgba(16, 185, 129, 0.1)';
+                                                    e.currentTarget.style.color = '#059669';
+                                                }}
+                                            >
+                                                <Check size={16} />
+                                                Done
+                                            </button>
+                                            <button
+                                                onClick={(e) => handleAction(e, conn, 'skip')}
+                                                title="Skip"
+                                                style={{
+                                                    display: 'flex',
+                                                    alignItems: 'center',
+                                                    justifyContent: 'center',
+                                                    gap: '0.25rem',
+                                                    padding: '0.5rem 0.75rem',
+                                                    border: '1px solid #dc2626',
+                                                    borderRadius: '6px',
+                                                    backgroundColor: 'rgba(239, 68, 68, 0.1)',
+                                                    color: '#dc2626',
+                                                    cursor: 'pointer',
+                                                    fontSize: '0.875rem',
+                                                    fontWeight: '600',
+                                                    transition: 'all 0.2s'
+                                                }}
+                                                onMouseEnter={(e) => {
+                                                    e.currentTarget.style.backgroundColor = '#dc2626';
+                                                    e.currentTarget.style.color = 'white';
+                                                }}
+                                                onMouseLeave={(e) => {
+                                                    e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)';
+                                                    e.currentTarget.style.color = '#dc2626';
+                                                }}
+                                            >
+                                                <X size={16} />
+                                                Skip
+                                            </button>
                                         </div>
-                                    )}
-                                </div>
-                                <div style={{ textAlign: 'right' }}>
-                                    {conn.last_contact && (
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-secondary)' }}>
-                                            Last: {new Date(conn.last_contact).toLocaleDateString()}
-                                        </div>
-                                    )}
-                                    {daysUntilDue !== null && (
-                                        <div style={{ fontSize: '0.75rem', color: 'var(--color-text-tertiary)' }}>
-                                            {daysUntilDue > 0 ? `Due in ${daysUntilDue} days` : `${Math.abs(daysUntilDue)} days overdue`}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </Link>
-                    );
-                })}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
             </div>
         );
     };

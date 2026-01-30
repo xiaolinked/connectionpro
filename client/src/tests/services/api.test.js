@@ -69,33 +69,36 @@ describe('ApiService', () => {
             });
         });
 
-        it('verifyMagicLink sends POST with token', async () => {
+        it('verifyMagicLink sends POST with token in body', async () => {
             mockFetch.mockResolvedValueOnce(
                 mockResponse({ access_token: 'jwt-123', user: { id: '1' } })
             );
             const result = await api.verifyMagicLink('magic-token');
             expect(result.access_token).toBe('jwt-123');
-            expect(mockFetch.mock.calls[0][0]).toContain('/auth/verify?token=magic-token');
+            const callArgs = mockFetch.mock.calls[0];
+            expect(callArgs[0]).toContain('/auth/verify');
+            expect(callArgs[1].method).toBe('POST');
+            expect(JSON.parse(callArgs[1].body)).toEqual({ token: 'magic-token' });
         });
 
-        it('getMe sends GET to /auth/me', async () => {
+        it('getMe sends GET to /users/me', async () => {
             api.setToken('valid-token');
             mockFetch.mockResolvedValueOnce(
                 mockResponse({ id: '1', name: 'John', email: 'john@test.com' })
             );
             const result = await api.getMe();
             expect(result.name).toBe('John');
-            expect(mockFetch.mock.calls[0][0]).toContain('/auth/me');
+            expect(mockFetch.mock.calls[0][0]).toContain('/users/me');
         });
 
-        it('updateMe sends PUT to /auth/me with updates', async () => {
+        it('updateMe sends PUT to /users/me with updates', async () => {
             api.setToken('valid-token');
             mockFetch.mockResolvedValueOnce(
                 mockResponse({ id: '1', name: 'Updated Name', email: 'john@test.com' })
             );
             const result = await api.updateMe({ name: 'Updated Name' });
             expect(result.name).toBe('Updated Name');
-            expect(mockFetch.mock.calls[0][0]).toContain('/auth/me');
+            expect(mockFetch.mock.calls[0][0]).toContain('/users/me');
             expect(mockFetch.mock.calls[0][1].method).toBe('PUT');
             expect(JSON.parse(mockFetch.mock.calls[0][1].body)).toEqual({ name: 'Updated Name' });
         });
@@ -231,6 +234,78 @@ describe('ApiService', () => {
             await expect(
                 api.enrichLinkedin('https://linkedin.com/in/blocked')
             ).rejects.toThrow('Scraping blocked');
+        });
+    });
+
+    // Regression tests: Ensure API endpoints match backend routes
+    // These tests prevent drift between frontend API calls and backend route definitions
+    describe('Endpoint path regression tests', () => {
+        beforeEach(() => api.setToken('valid-token'));
+
+        // CRITICAL: getMe must call /users/me, NOT /auth/me
+        // The backend defines the endpoint at /users/me but frontend was incorrectly calling /auth/me
+        // This caused 404 errors which triggered spurious logouts
+        it('REGRESSION: getMe calls /users/me not /auth/me', async () => {
+            mockFetch.mockResolvedValueOnce(mockResponse({ id: '1' }));
+            await api.getMe();
+            const url = mockFetch.mock.calls[0][0];
+            expect(url).toContain('/users/me');
+            expect(url).not.toContain('/auth/me');
+        });
+
+        it('REGRESSION: updateMe calls /users/me not /auth/me', async () => {
+            mockFetch.mockResolvedValueOnce(mockResponse({ id: '1' }));
+            await api.updateMe({ name: 'Test' });
+            const url = mockFetch.mock.calls[0][0];
+            expect(url).toContain('/users/me');
+            expect(url).not.toContain('/auth/me');
+        });
+
+        // Ensure auth endpoints use correct paths
+        it('verifyMagicLink calls /auth/verify with POST', async () => {
+            mockFetch.mockResolvedValueOnce(mockResponse({ access_token: 'token' }));
+            await api.verifyMagicLink('token');
+            const url = mockFetch.mock.calls[0][0];
+            expect(url).toContain('/auth/verify');
+            expect(mockFetch.mock.calls[0][1].method).toBe('POST');
+        });
+
+        it('checkEmail calls /auth/check-email', async () => {
+            mockFetch.mockResolvedValueOnce(mockResponse({ exists: true }));
+            await api.checkEmail('test@test.com');
+            expect(mockFetch.mock.calls[0][0]).toContain('/auth/check-email');
+        });
+
+        it('register calls /auth/register', async () => {
+            mockFetch.mockResolvedValueOnce(mockResponse({ magic_link: 'link' }));
+            await api.register('Name', 'email@test.com');
+            expect(mockFetch.mock.calls[0][0]).toContain('/auth/register');
+        });
+    });
+
+    describe('Error handling', () => {
+        it('throws Unauthorized error on 401 response', async () => {
+            api.setToken('expired-token');
+            mockFetch.mockResolvedValueOnce(mockResponse({}, 401));
+            await expect(api.getMe()).rejects.toThrow('Unauthorized');
+        });
+
+        it('throws error with detail message from server', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: false,
+                status: 400,
+                json: () => Promise.resolve({ detail: 'Invalid request' }),
+            });
+            await expect(api.checkEmail('bad')).rejects.toThrow('Invalid request');
+        });
+
+        it('handles object error details by stringifying them', async () => {
+            mockFetch.mockResolvedValueOnce({
+                ok: false,
+                status: 422,
+                json: () => Promise.resolve({ detail: [{ msg: 'field required' }] }),
+            });
+            await expect(api.checkEmail('bad')).rejects.toThrow('[{"msg":"field required"}]');
         });
     });
 });

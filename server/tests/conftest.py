@@ -38,9 +38,17 @@ def client_fixture(session):
         yield session
 
     app.dependency_overrides[get_session] = get_session_override
+    
+    # Disable rate limiter for testing
+    if hasattr(app.state, "limiter"):
+        app.state.limiter.enabled = False
+
     client = TestClient(app)
     yield client
     app.dependency_overrides.clear()
+    
+    if hasattr(app.state, "limiter"):
+        app.state.limiter.enabled = True
 
 
 @pytest.fixture(name="test_user")

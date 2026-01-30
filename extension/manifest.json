@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "Kithly LinkedIn Helper",
+    "name": "ConnectionPro LinkedIn Helper",
     "version": "1.0",
-    "description": "Extract LinkedIn profile data for Kithly",
+    "description": "Extract LinkedIn profile data for ConnectionPro",
     "permissions": [
         "activeTab",
         "scripting"

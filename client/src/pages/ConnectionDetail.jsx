@@ -1,15 +1,35 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom'; // Ensure Link is imported
 import { useData } from '../context/DataContext';
+import { api } from '../services/api';
 import { ArrowLeft, Building, Mail, Target, Calendar, MessageSquare, Tag, Trash2, MapPin, Handshake, Info, Clock, PenTool } from 'lucide-react';
 
 const ConnectionDetail = () => {
     const { id } = useParams();
     const navigate = useNavigate();
-    const { connections, logs, addLog, deleteConnection } = useData();
+    const { connections, addLog, deleteConnection } = useData();
 
     const connection = connections.find(c => c.id === id);
-    const connectionLogs = logs.filter(l => l.connection_id === id);
+
+    // Fetch logs for this specific connection
+    const [connectionLogs, setConnectionLogs] = useState([]);
+    const [logsLoading, setLogsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchLogs = async () => {
+            if (!id) return;
+            setLogsLoading(true);
+            try {
+                const data = await api.getLogsByConnection(id);
+                setConnectionLogs(data.items || data);
+            } catch (err) {
+                console.error("Failed to load logs for connection", err);
+            } finally {
+                setLogsLoading(false);
+            }
+        };
+        fetchLogs();
+    }, [id]);
 
     const [newLog, setNewLog] = useState({
         date: new Date().toISOString().split('T')[0],
@@ -34,19 +54,27 @@ const ConnectionDetail = () => {
         }
     };
 
-    const handleLogSubmit = (e) => {
+    const handleLogSubmit = async (e) => {
         e.preventDefault();
-        addLog({
-            connectionId: id,
-            ...newLog,
-            tags: newLog.tags.split(',').map(t => t.trim()).filter(Boolean)
-        });
-        setNewLog({
-            date: new Date().toISOString().split('T')[0],
-            type: 'meeting',
-            notes: '',
-            tags: ''
-        });
+        try {
+            const createdLog = await addLog({
+                connectionId: id,
+                ...newLog,
+                tags: newLog.tags.split(',').map(t => t.trim()).filter(Boolean)
+            });
+            // Add to local logs state so it appears immediately
+            if (createdLog) {
+                setConnectionLogs(prev => [createdLog, ...prev]);
+            }
+            setNewLog({
+                date: new Date().toISOString().split('T')[0],
+                type: 'meeting',
+                notes: '',
+                tags: ''
+            });
+        } catch (err) {
+            console.error("Failed to add log", err);
+        }
     };
 
     return (
@@ -137,7 +165,11 @@ const ConnectionDetail = () => {
                 <div>
                     <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>Timeline</h2>
 
-                    {connectionLogs.length === 0 ? (
+                    {logsLoading ? (
+                        <div className="card" style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--color-text-secondary)' }}>
+                            <p>Loading interactions...</p>
+                        </div>
+                    ) : connectionLogs.length === 0 ? (
                         <div className="card" style={{ textAlign: 'center', padding: '3rem 1rem', color: 'var(--color-text-secondary)' }}>
                             <p>No interactions logged yet.</p>
                             <p style={{ fontSize: '0.875rem', marginTop: '0.5rem' }}>Log your first meeting or call!</p>

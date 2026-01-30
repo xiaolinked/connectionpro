@@ -28,12 +28,13 @@ export const DataProvider = ({ children }) => {
             setIsLoading(true);
             try {
                 // Fetch independently to be resilient
+                // Note: API returns paginated responses with { items: [], total, limit, offset }
                 const connectionsPromise = api.getConnections()
-                    .then(data => setConnections(data))
+                    .then(data => setConnections(data.items || data))
                     .catch(err => console.error("Failed to load connections", err));
 
                 const logsPromise = api.getLogs()
-                    .then(data => setLogs(data))
+                    .then(data => setLogs(data.items || data))
                     .catch(err => console.error("Failed to load logs", err));
 
                 await Promise.all([connectionsPromise, logsPromise]);

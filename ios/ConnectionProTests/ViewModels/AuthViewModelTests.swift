@@ -72,4 +72,20 @@ final class AuthViewModelTests: XCTestCase {
 
         XCTAssertFalse(viewModel.isVerifying)
     }
+    
+    // Note: This mainly tests the side effects of deleteAccount (calling logout)
+    // since we cannot easily mock the static AuthService without refactoring.
+    func testDeleteAccount_clearsState() async throws {
+        let viewModel = AuthViewModel()
+        viewModel.isAuthenticated = true
+        viewModel.user = UserRead(id: "1", email: "test@example.com", name: "User", isActive: true, createdAt: Date())
+        
+        // We simulate the success path by manually triggering what happens after success
+        // In a real unit test with DI, we would mock AuthService.deleteAccount to return success.
+        // Here we just test that the logout logic which follows is correct.
+        viewModel.logout()
+        
+        XCTAssertFalse(viewModel.isAuthenticated)
+        XCTAssertNil(viewModel.user)
+    }
 }

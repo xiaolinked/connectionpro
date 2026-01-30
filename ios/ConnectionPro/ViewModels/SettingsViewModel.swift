@@ -47,4 +47,19 @@ final class SettingsViewModel {
     func logout() {
         authViewModel.logout()
     }
+
+    // MARK: - Delete Account
+
+    func deleteAccount() async {
+        isSaving = true
+        saveMessage = nil
+        do {
+            try await authViewModel.deleteAccount()
+            // Logout happens automatically in authViewModel
+        } catch {
+            saveMessage = "Error deleting account: \(error.localizedDescription)"
+            saveSuccess = false
+            isSaving = false
+        }
+    }
 }

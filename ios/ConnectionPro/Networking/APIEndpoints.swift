@@ -19,6 +19,15 @@ struct APIEndpoint {
         )
     }
 
+    static func login(email: String) -> APIEndpoint {
+        APIEndpoint(
+            path: "/auth/login",
+            method: "POST",
+            body: ["email": email],
+            requiresAuth: false
+        )
+    }
+
     static func register(name: String, email: String) -> APIEndpoint {
         APIEndpoint(
             path: "/auth/register",
@@ -38,11 +47,15 @@ struct APIEndpoint {
     }
 
     static func getMe() -> APIEndpoint {
-        APIEndpoint(path: "/auth/me", method: "GET")
+        APIEndpoint(path: "/users/me", method: "GET")
     }
 
     static func updateMe(updates: UserUpdate) -> APIEndpoint {
-        APIEndpoint(path: "/auth/me", method: "PUT", body: updates)
+        APIEndpoint(path: "/users/me", method: "PUT", body: updates)
+    }
+
+    static func deleteUser() -> APIEndpoint {
+        APIEndpoint(path: "/users/me", method: "DELETE")
     }
 
     // MARK: - Connection Endpoints
@@ -79,5 +92,11 @@ struct APIEndpoint {
 
     static func deleteLog(id: String) -> APIEndpoint {
         APIEndpoint(path: "/logs/\(id)", method: "DELETE")
+    }
+
+    // MARK: - Tag Endpoints
+    
+    static func getTags(type: String) -> APIEndpoint {
+        APIEndpoint(path: "/api/tags/\(type)", method: "GET")
     }
 }

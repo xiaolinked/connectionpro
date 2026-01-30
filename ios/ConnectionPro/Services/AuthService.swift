@@ -7,6 +7,10 @@ enum AuthService {
         try await client.request(.checkEmail(email: email), responseType: CheckEmailResponse.self)
     }
 
+    static func login(email: String) async throws -> RegisterResponse {
+        try await client.request(.login(email: email), responseType: RegisterResponse.self)
+    }
+
     static func register(name: String, email: String) async throws -> RegisterResponse {
         try await client.request(.register(name: name, email: email), responseType: RegisterResponse.self)
     }
@@ -21,5 +25,9 @@ enum AuthService {
 
     static func updateMe(_ updates: UserUpdate) async throws -> UserRead {
         try await client.request(.updateMe(updates: updates), responseType: UserRead.self)
+    }
+
+    static func deleteAccount() async throws {
+        try await client.request(.deleteUser())
     }
 }

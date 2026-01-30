@@ -26,12 +26,15 @@ struct ConnectionRowView: View {
     }
 
     var body: some View {
-        HStack(spacing: 12) {
-            AvatarView(name: connection.name, size: 44)
+        HStack(spacing: 16) {
+            AvatarView(name: connection.name, size: 48)
+                .shadow(color: .black.opacity(0.1), radius: 2, x: 0, y: 1)
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(connection.name)
-                    .font(.headline)
+                    .font(.system(.body, design: .rounded))
+                    .fontWeight(.semibold)
+                    .foregroundStyle(.primary)
 
                 if !subtitle.isEmpty {
                     Text(subtitle)
@@ -43,15 +46,19 @@ struct ConnectionRowView: View {
 
             Spacer()
 
-            VStack(alignment: .trailing, spacing: 4) {
+            VStack(alignment: .trailing, spacing: 6) {
                 StatusBadgeView(status: statusResult.status)
 
-                Text(lastContactText)
-                    .font(.caption)
-                    .foregroundStyle(.tertiary)
+                HStack(spacing: 4) {
+                    Image(systemName: "clock")
+                        .font(.caption2)
+                    Text(lastContactText)
+                        .font(.caption)
+                }
+                .foregroundStyle(.tertiary)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 8)
     }
 }
 

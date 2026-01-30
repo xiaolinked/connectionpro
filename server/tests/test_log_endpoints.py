@@ -98,14 +98,14 @@ class TestGetLogs:
     def test_list_logs_empty(self, client, auth_headers):
         response = client.get("/logs", headers=auth_headers)
         assert response.status_code == 200
-        assert response.json() == []
+        assert response.json()["items"] == []
 
     def test_list_logs_with_data(self, client, auth_headers, test_log):
         response = client.get("/logs", headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
-        assert len(data) == 1
-        assert data[0]["notes"] == test_log.notes
+        assert len(data["items"]) == 1
+        assert data["items"][0]["notes"] == test_log.notes
 
     def test_list_logs_user_isolation(
         self, client, second_auth_headers, test_log
@@ -113,7 +113,7 @@ class TestGetLogs:
         """Second user should not see first user's logs."""
         response = client.get("/logs", headers=second_auth_headers)
         assert response.status_code == 200
-        assert response.json() == []
+        assert response.json()["items"] == []
 
     def test_list_logs_unauthenticated(self, client):
         response = client.get("/logs")
@@ -127,10 +127,10 @@ class TestGetLogs:
 
         response = client.get("/logs", headers=auth_headers)
         data = response.json()
-        assert len(data) == 3
+        assert len(data["items"]) == 3
         # Most recent should be first
-        assert data[0]["notes"] == "Third log"
-        assert data[2]["notes"] == "First log"
+        assert data["items"][0]["notes"] == "Third log"
+        assert data["items"][2]["notes"] == "First log"
 
 
 class TestDeleteLog:
@@ -140,7 +140,7 @@ class TestDeleteLog:
 
         # Verify it's gone
         logs_response = client.get("/logs", headers=auth_headers)
-        assert len(logs_response.json()) == 0
+        assert len(logs_response.json()["items"]) == 0
 
     def test_delete_nonexistent_log(self, client, auth_headers):
         response = client.delete("/logs/nonexistent-id", headers=auth_headers)
@@ -159,3 +159,161 @@ class TestDeleteLog:
     def test_delete_log_unauthenticated(self, client, test_log):
         response = client.delete(f"/logs/{test_log.id}")
         assert response.status_code == 401
+
+
+class TestLastContactSync:
+    """Tests for automatic lastContact synchronization with logs."""
+
+    def test_create_log_updates_connection_last_contact(
+        self, client, auth_headers, session, test_user
+    ):
+        """Creating a log should update the connection's lastContact."""
+        import datetime
+        from models import Connection
+        
+        # Create a connection with no lastContact
+        conn = Connection(
+            id="sync-test-conn-1",
+            user_id=test_user.id,
+            name="Sync Test",
+            lastContact=None,
+        )
+        session.add(conn)
+        session.commit()
+
+        # Create a log for this connection
+        response = client.post(
+            "/logs",
+            json={
+                "connection_id": conn.id,
+                "notes": "First interaction",
+            },
+            headers=auth_headers,
+        )
+        assert response.status_code == 201
+        log_data = response.json()
+
+        # Refresh and check the connection's lastContact was updated
+        session.refresh(conn)
+        assert conn.lastContact is not None
+        # Should be close to the log's created_at
+        log_created = datetime.datetime.fromisoformat(log_data["created_at"].replace("Z", "+00:00"))
+        assert abs((conn.lastContact.replace(tzinfo=None) - log_created.replace(tzinfo=None)).total_seconds()) < 2
+
+    def test_create_older_log_does_not_overwrite_last_contact(
+        self, client, auth_headers, session, test_user
+    ):
+        """Creating a log with an older date should not overwrite a more recent lastContact."""
+        import datetime
+        from models import Connection
+
+        # Create connection with a recent lastContact
+        recent_date = datetime.datetime(2025, 6, 15, 12, 0, 0)
+        conn = Connection(
+            id="sync-test-conn-2",
+            user_id=test_user.id,
+            name="Sync Test 2",
+            lastContact=recent_date,
+        )
+        session.add(conn)
+        session.commit()
+
+        # Create a log with an older date
+        old_date = "2025-01-01T10:00:00Z"
+        response = client.post(
+            "/logs",
+            json={
+                "connection_id": conn.id,
+                "notes": "Old interaction",
+                "created_at": old_date,
+            },
+            headers=auth_headers,
+        )
+        assert response.status_code == 201
+
+        # lastContact should still be the recent date
+        session.refresh(conn)
+        assert conn.lastContact == recent_date
+
+    def test_delete_log_recalculates_last_contact(
+        self, client, auth_headers, session, test_user
+    ):
+        """Deleting a log should recalculate lastContact from remaining logs."""
+        import datetime
+        from models import Connection, Log
+
+        # Create connection
+        conn = Connection(
+            id="sync-test-conn-3",
+            user_id=test_user.id,
+            name="Sync Test 3",
+            lastContact=None,
+        )
+        session.add(conn)
+        session.commit()
+
+        # Create two logs with different dates
+        older_log = Log(
+            id="older-log-id",
+            user_id=test_user.id,
+            connection_id=conn.id,
+            type="meeting",
+            notes="Older meeting",
+            created_at=datetime.datetime(2025, 3, 1, 10, 0, 0),
+        )
+        newer_log = Log(
+            id="newer-log-id",
+            user_id=test_user.id,
+            connection_id=conn.id,
+            type="call",
+            notes="Recent call",
+            created_at=datetime.datetime(2025, 6, 1, 10, 0, 0),
+        )
+        conn.lastContact = newer_log.created_at
+        session.add(older_log)
+        session.add(newer_log)
+        session.add(conn)
+        session.commit()
+
+        # Delete the newer log
+        response = client.delete("/logs/newer-log-id", headers=auth_headers)
+        assert response.status_code == 204
+
+        # lastContact should now be the older log's date
+        session.refresh(conn)
+        assert conn.lastContact == datetime.datetime(2025, 3, 1, 10, 0, 0)
+
+    def test_delete_all_logs_clears_last_contact(
+        self, client, auth_headers, session, test_user
+    ):
+        """Deleting all logs should set lastContact to None."""
+        import datetime
+        from models import Connection, Log
+
+        # Create connection with a log
+        conn = Connection(
+            id="sync-test-conn-4",
+            user_id=test_user.id,
+            name="Sync Test 4",
+            lastContact=datetime.datetime(2025, 5, 1, 10, 0, 0),
+        )
+        only_log = Log(
+            id="only-log-id",
+            user_id=test_user.id,
+            connection_id=conn.id,
+            type="email",
+            notes="Only interaction",
+            created_at=datetime.datetime(2025, 5, 1, 10, 0, 0),
+        )
+        session.add(conn)
+        session.add(only_log)
+        session.commit()
+
+        # Delete the only log
+        response = client.delete("/logs/only-log-id", headers=auth_headers)
+        assert response.status_code == 204
+
+        # lastContact should now be None
+        session.refresh(conn)
+        assert conn.lastContact is None
+

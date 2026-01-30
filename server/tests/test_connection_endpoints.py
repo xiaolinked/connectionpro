@@ -75,14 +75,14 @@ class TestGetConnections:
     def test_list_connections_empty(self, client, auth_headers):
         response = client.get("/connections", headers=auth_headers)
         assert response.status_code == 200
-        assert response.json() == []
+        assert response.json()["items"] == []
 
     def test_list_connections_with_data(self, client, auth_headers, test_connection):
         response = client.get("/connections", headers=auth_headers)
         assert response.status_code == 200
         data = response.json()
-        assert len(data) == 1
-        assert data[0]["name"] == test_connection.name
+        assert len(data["items"]) == 1
+        assert data["items"][0]["name"] == test_connection.name
 
     def test_list_connections_user_isolation(
         self, client, auth_headers, second_auth_headers, test_connection
@@ -90,7 +90,7 @@ class TestGetConnections:
         """Second user should not see first user's connections."""
         response = client.get("/connections", headers=second_auth_headers)
         assert response.status_code == 200
-        assert response.json() == []
+        assert response.json()["items"] == []
 
     def test_list_connections_unauthenticated(self, client):
         response = client.get("/connections")
@@ -104,7 +104,7 @@ class TestGetConnections:
                 headers=auth_headers,
             )
         response = client.get("/connections", headers=auth_headers)
-        assert len(response.json()) == 5
+        assert len(response.json()["items"]) == 5
 
 
 class TestGetSingleConnection:
@@ -237,4 +237,4 @@ class TestDeleteConnection:
     def test_delete_removes_from_list(self, client, auth_headers, test_connection):
         client.delete(f"/connections/{test_connection.id}", headers=auth_headers)
         response = client.get("/connections", headers=auth_headers)
-        assert len(response.json()) == 0
+        assert len(response.json()["items"]) == 0

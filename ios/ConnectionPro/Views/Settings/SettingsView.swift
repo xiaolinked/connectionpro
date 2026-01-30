@@ -3,6 +3,8 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(AuthViewModel.self) private var authViewModel
     @State private var viewModel: SettingsViewModel?
+    @State private var showDeleteConfirmation = false
+    @State private var deleteConfirmationText = ""
 
     var body: some View {
         Group {
@@ -100,7 +102,7 @@ struct SettingsView: View {
                 Label("Account Security", systemImage: "shield")
             }
 
-            // Logout Section
+            // Danger Zone Section
             Section {
                 Button(role: .destructive) {
                     viewModel.logout()
@@ -110,10 +112,35 @@ struct SettingsView: View {
                         Text("Logout")
                     }
                 }
+                
+                Button(role: .destructive) {
+                    showDeleteConfirmation = true
+                    deleteConfirmationText = ""
+                } label: {
+                    HStack {
+                        Image(systemName: "trash")
+                        Text("Delete Account")
+                    }
+                }
+                .foregroundStyle(.red)
             } header: {
-                Label("Account Actions", systemImage: "gear")
+                Label("Danger Zone", systemImage: "exclamationmark.triangle")
+                    .foregroundStyle(.red)
             } footer: {
-                Text("This will sign you out and clear your session from this device.")
+                Text("Deleting your account is permanent and cannot be undone.")
+                    .foregroundStyle(.red)
+            }
+            .alert("Delete Account", isPresented: $showDeleteConfirmation) {
+                TextField("Type DELETE to confirm", text: $deleteConfirmationText)
+                Button("Cancel", role: .cancel) { }
+                Button("Delete", role: .destructive) {
+                    if deleteConfirmationText == "DELETE" {
+                        Task { await viewModel.deleteAccount() }
+                    }
+                }
+                .disabled(deleteConfirmationText != "DELETE")
+            } message: {
+                Text("This will permanently delete your profile, all connections, and logs. Type DELETE to confirm.")
             }
         }
     }

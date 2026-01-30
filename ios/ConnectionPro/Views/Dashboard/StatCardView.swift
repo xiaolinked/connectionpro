@@ -12,21 +12,32 @@ struct StatCardView: View {
                 Image(systemName: systemImage)
                     .font(.title2)
                     .foregroundStyle(color)
+                    .padding(8)
+                    .background(color.opacity(0.1))
+                    .clipShape(Circle())
 
                 Spacer()
             }
 
-            Text("\(value)")
-                .font(.system(size: 32, weight: .bold, design: .rounded))
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(value)")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .foregroundStyle(.primary)
 
-            Text(title)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                Text(title)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.secondary)
+            }
         }
-        .padding()
+        .padding(16)
         .background(Color.cardBackground)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.03), radius: 8, x: 0, y: 4)
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(Color.primary.opacity(0.03), lineWidth: 1)
+        )
     }
 }
 

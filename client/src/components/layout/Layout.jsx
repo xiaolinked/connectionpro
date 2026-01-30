@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import { Home, Users, UserPlus, Settings, LogOut, Calendar, Network } from 'lucide-react';
+import { Home, Users, UserPlus, Settings, LogOut, Calendar } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 
 const Layout = ({ children }) => {
@@ -31,29 +31,20 @@ const Layout = ({ children }) => {
                 display: 'flex',
                 flexDirection: 'column'
             }}>
-                <div style={{ padding: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                    <div style={{
-                        width: '32px',
-                        height: '32px',
-                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                        borderRadius: '8px',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <Network size={18} color="white" />
-                    </div>
-                    <span style={{ fontSize: '1.25rem', fontWeight: 'bold', color: '#1f2937' }}>Kithly</span>
+                <div style={{ padding: '0 1.5rem', marginBottom: '2rem' }}>
+                    <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-accent-primary)' }}>ConnectionPro</h1>
                 </div>
 
                 <nav style={{ flex: '1', padding: '0 1rem' }}>
                     {navItems.map(item => {
                         const Icon = item.icon;
+                        // Use 'end' for routes that have child routes to prevent partial matching
+                        const useEnd = item.path === '/' || item.path === '/connections';
                         return (
                             <NavLink
                                 key={item.path}
                                 to={item.path}
-                                end={item.path === '/'}
+                                end={useEnd}
                                 style={({ isActive }) => ({
                                     display: 'flex',
                                     alignItems: 'center',

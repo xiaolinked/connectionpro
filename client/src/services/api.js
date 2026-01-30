@@ -32,7 +32,12 @@ class ApiService {
 
         if (!response.ok) {
             const error = await response.json().catch(() => ({ detail: 'An error occurred' }));
-            throw new Error(error.detail || 'Request failed');
+            // Ensure error message is a string
+            let errorMessage = error.detail || 'Request failed';
+            if (typeof errorMessage === 'object') {
+                errorMessage = JSON.stringify(errorMessage);
+            }
+            throw new Error(errorMessage);
         }
 
         if (response.status === 204) return true;
@@ -51,20 +56,35 @@ class ApiService {
         });
     }
 
-    async verifyMagicLink(token) {
-        return this.fetch(`${API_BASE_URL}/auth/verify?token=${token}`, {
+    async sendLoginLink(email) {
+        return this.fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
+            body: JSON.stringify({ email }),
+        });
+    }
+
+    async verifyMagicLink(token) {
+        // Must send token in body as per backend expectation
+        return this.fetch(`${API_BASE_URL}/auth/verify`, {
+            method: 'POST',
+            body: JSON.stringify({ token }),
         });
     }
 
     async getMe() {
-        return this.fetch(`${API_BASE_URL}/auth/me`);
+        return this.fetch(`${API_BASE_URL}/users/me`);
     }
 
     async updateMe(updates) {
-        return this.fetch(`${API_BASE_URL}/auth/me`, {
+        return this.fetch(`${API_BASE_URL}/users/me`, {
             method: 'PUT',
             body: JSON.stringify(updates),
+        });
+    }
+
+    async deleteMe() {
+        return this.fetch(`${API_BASE_URL}/users/me`, {
+            method: 'DELETE',
         });
     }
 
@@ -117,8 +137,14 @@ class ApiService {
     }
 
     // ===== LOG METHODS =====
-    async getLogs() {
-        return this.fetch(`${API_BASE_URL}/logs`);
+    async getLogs(limit = 20) {
+        // For dashboard - just fetch recent logs
+        return this.fetch(`${API_BASE_URL}/logs?limit=${limit}`);
+    }
+
+    async getLogsByConnection(connectionId) {
+        // Fetch all logs for a specific connection
+        return this.fetch(`${API_BASE_URL}/logs?connection_id=${connectionId}&limit=500`);
     }
 
     async createLog(logData) {
@@ -132,6 +158,11 @@ class ApiService {
         return this.fetch(`${API_BASE_URL}/logs/${id}`, {
             method: 'DELETE'
         });
+    }
+
+    // ===== TAGS METHODS =====
+    async getTags(type) {
+        return this.fetch(`${API_BASE_URL}/tags/${type}`);
     }
 }
 

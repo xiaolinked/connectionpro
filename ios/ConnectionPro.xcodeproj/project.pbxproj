@@ -7,59 +7,65 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B0001001 /* ConnectionProApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0001000; };
-		B0001003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0001002; };
-		B0001005 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0001004; };
-		B0002001 /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002000; };
-		B0002003 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002002; };
-		B0002005 /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002004; };
-		B0003001 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003000; };
-		B0003003 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003002; };
-		B0003005 /* ConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003004; };
-		B0003007 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003006; };
-		B0003009 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003008; };
-		B0004001 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004000; };
-		B0004003 /* APIEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004002; };
-		B0004005 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004004; };
-		B0005001 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0005000; };
-		B0006001 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006000; };
-		B0006003 /* ConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006002; };
-		B0006005 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006004; };
-		B0006007 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006006; };
-		B0007001 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007000; };
-		B0007003 /* ConnectionDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007002; };
-		B0007005 /* ConnectionFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007004; };
-		B0007007 /* ConnectionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007006; };
-		B0007009 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007008; };
-		B0007011 /* QuickAddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007010; };
-		B0007013 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007012; };
-		B0008001 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0008000; };
-		B0008003 /* VerifyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0008002; };
-		B0009001 /* ConnectionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009000; };
-		B0009003 /* ConnectionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009002; };
-		B0009005 /* ConnectionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009004; };
-		B0009007 /* LogFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009006; };
-		B0009009 /* TimelineItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009008; };
-		B0010001 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010000; };
-		B0010003 /* SmartRemindersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010002; };
-		B0010005 /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010004; };
-		B0011001 /* CadencePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011000; };
-		B0011003 /* ConnectionFormFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011002; };
-		B0011005 /* EditConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011004; };
-		B0011007 /* NewConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011006; };
-		B0011009 /* QuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011008; };
-		B0011011 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011010; };
-		B0012001 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0012000; };
-		B0012003 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0012002; };
-		B0013001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0013000; };
-		B0014001 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014000; };
-		B0014003 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014002; };
-		B0014005 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014004; };
-		B0014007 /* StatusBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014006; };
-		B0020001 /* ConnectionStatusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020000; };
-		B0020003 /* KeychainServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020002; };
-		B0020005 /* AuthViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020004; };
-		B0020007 /* ConnectionListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020006; };
+		B0001001 /* ConnectionProApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0001000 /* ConnectionProApp.swift */; };
+		B0001003 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0001002 /* Assets.xcassets */; };
+		B0001005 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0001004 /* Preview Assets.xcassets */; };
+		B0002001 /* Color+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002000 /* Color+Extensions.swift */; };
+		B0002003 /* Date+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002002 /* Date+Extensions.swift */; };
+		B0002005 /* View+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0002004 /* View+Extensions.swift */; };
+		B0003001 /* AuthResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003000 /* AuthResponse.swift */; };
+		B0003003 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003002 /* Connection.swift */; };
+		B0003005 /* ConnectionStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003004 /* ConnectionStatus.swift */; };
+		B0003007 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003006 /* Log.swift */; };
+		B0003009 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0003008 /* User.swift */; };
+		B0004001 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004000 /* APIClient.swift */; };
+		B0004003 /* APIEndpoints.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004002 /* APIEndpoints.swift */; };
+		B0004005 /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0004004 /* APIError.swift */; };
+		B0005001 /* PreviewData.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0005000 /* PreviewData.swift */; };
+		B0006001 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006000 /* AuthService.swift */; };
+		B0006003 /* ConnectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006002 /* ConnectionService.swift */; };
+		B0006005 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006004 /* KeychainService.swift */; };
+		B0006007 /* LogService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0006006 /* LogService.swift */; };
+		B0007001 /* AuthViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007000 /* AuthViewModel.swift */; };
+		B0007003 /* ConnectionDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007002 /* ConnectionDetailViewModel.swift */; };
+		B0007005 /* ConnectionFormViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007004 /* ConnectionFormViewModel.swift */; };
+		B0007007 /* ConnectionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007006 /* ConnectionListViewModel.swift */; };
+		B0007009 /* DashboardViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007008 /* DashboardViewModel.swift */; };
+		B0007011 /* QuickAddViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007010 /* QuickAddViewModel.swift */; };
+		B0007013 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0007012 /* SettingsViewModel.swift */; };
+		B0008001 /* RegisterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0008000 /* RegisterView.swift */; };
+		B0008003 /* VerifyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0008002 /* VerifyView.swift */; };
+		B0009001 /* ConnectionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009000 /* ConnectionDetailView.swift */; };
+		B0009003 /* ConnectionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009002 /* ConnectionListView.swift */; };
+		B0009005 /* ConnectionRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009004 /* ConnectionRowView.swift */; };
+		B0009007 /* LogFormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009006 /* LogFormView.swift */; };
+		B0009009 /* TimelineItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0009008 /* TimelineItemView.swift */; };
+		B0010001 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010000 /* DashboardView.swift */; };
+		B0010003 /* SmartRemindersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010002 /* SmartRemindersView.swift */; };
+		B0010005 /* StatCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0010004 /* StatCardView.swift */; };
+		B0011001 /* CadencePickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011000 /* CadencePickerView.swift */; };
+		B0011003 /* ConnectionFormFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011002 /* ConnectionFormFields.swift */; };
+		B0011005 /* EditConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011004 /* EditConnectionView.swift */; };
+		B0011007 /* NewConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011006 /* NewConnectionView.swift */; };
+		B0011009 /* QuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011008 /* QuickAddView.swift */; };
+		B0011011 /* TagPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0011010 /* TagPickerView.swift */; };
+		B0012001 /* AppRootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0012000 /* AppRootView.swift */; };
+		B0012003 /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0012002 /* MainTabView.swift */; };
+		B0013001 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0013000 /* SettingsView.swift */; };
+		B0014001 /* AvatarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014000 /* AvatarView.swift */; };
+		B0014003 /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014002 /* EmptyStateView.swift */; };
+		B0014005 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014004 /* LoadingView.swift */; };
+		B0014007 /* StatusBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0014006 /* StatusBadgeView.swift */; };
+		B0015001 /* PhonebookContact.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0015000 /* PhonebookContact.swift */; };
+		B0015003 /* ContactsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0015002 /* ContactsService.swift */; };
+		B0015005 /* ContactPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0015004 /* ContactPickerView.swift */; };
+		B0020001 /* ConnectionStatusTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020000 /* ConnectionStatusTests.swift */; };
+		B0020003 /* KeychainServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020002 /* KeychainServiceTests.swift */; };
+		B0020005 /* AuthViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020004 /* AuthViewModelTests.swift */; };
+		B0020007 /* ConnectionListViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0020006 /* ConnectionListViewModelTests.swift */; };
+		B0016001 /* HapticService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0016000 /* HapticService.swift */; };
+		B0016003 /* ToastManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0016002 /* ToastManager.swift */; };
+		B0016005 /* ToastView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0016004 /* ToastView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,8 +79,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B0P00010 /* ConnectionPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConnectionPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B0P00020 /* ConnectionProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConnectionProTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0001000 /* ConnectionProApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionProApp.swift; sourceTree = "<group>"; };
 		B0001002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B0001004 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -124,10 +128,18 @@
 		B0014002 /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		B0014004 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		B0014006 /* StatusBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBadgeView.swift; sourceTree = "<group>"; };
+		B0015000 /* PhonebookContact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhonebookContact.swift; sourceTree = "<group>"; };
+		B0015002 /* ContactsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactsService.swift; sourceTree = "<group>"; };
+		B0015004 /* ContactPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactPickerView.swift; sourceTree = "<group>"; };
 		B0020000 /* ConnectionStatusTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionStatusTests.swift; sourceTree = "<group>"; };
 		B0020002 /* KeychainServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainServiceTests.swift; sourceTree = "<group>"; };
 		B0020004 /* AuthViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthViewModelTests.swift; sourceTree = "<group>"; };
 		B0020006 /* ConnectionListViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListViewModelTests.swift; sourceTree = "<group>"; };
+		B0016000 /* HapticService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticService.swift; sourceTree = "<group>"; };
+		B0016002 /* ToastManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastManager.swift; sourceTree = "<group>"; };
+		B0016004 /* ToastView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToastView.swift; sourceTree = "<group>"; };
+		B0P00010 /* ConnectionPro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ConnectionPro.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0P00020 /* ConnectionProTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ConnectionProTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +220,7 @@
 				B0003004 /* ConnectionStatus.swift */,
 				B0003006 /* Log.swift */,
 				B0003008 /* User.swift */,
+				B0015000 /* PhonebookContact.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -236,8 +249,11 @@
 			children = (
 				B0006000 /* AuthService.swift */,
 				B0006002 /* ConnectionService.swift */,
+				B0015002 /* ContactsService.swift */,
+				B0016000 /* HapticService.swift */,
 				B0006004 /* KeychainService.swift */,
 				B0006006 /* LogService.swift */,
+				B0016002 /* ToastManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -306,6 +322,7 @@
 			children = (
 				B0011000 /* CadencePickerView.swift */,
 				B0011002 /* ConnectionFormFields.swift */,
+				B0015004 /* ContactPickerView.swift */,
 				B0011004 /* EditConnectionView.swift */,
 				B0011006 /* NewConnectionView.swift */,
 				B0011008 /* QuickAddView.swift */,
@@ -338,6 +355,7 @@
 				B0014002 /* EmptyStateView.swift */,
 				B0014004 /* LoadingView.swift */,
 				B0014006 /* StatusBadgeView.swift */,
+				B0016004 /* ToastView.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -524,6 +542,12 @@
 				B0014003 /* EmptyStateView.swift in Sources */,
 				B0014005 /* LoadingView.swift in Sources */,
 				B0014007 /* StatusBadgeView.swift in Sources */,
+				B0015001 /* PhonebookContact.swift in Sources */,
+				B0015003 /* ContactsService.swift in Sources */,
+				B0015005 /* ContactPickerView.swift in Sources */,
+				B0016001 /* HapticService.swift in Sources */,
+				B0016003 /* ToastManager.swift in Sources */,
+				B0016005 /* ToastView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -676,10 +700,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ConnectionPro/Preview Content\"";
+				DEVELOPMENT_TEAM = 9F59437MH2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = ConnectionPro;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Kithly uses your contacts to help you import connections from your phonebook.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -706,10 +732,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ConnectionPro/Preview Content\"";
+				DEVELOPMENT_TEAM = 9F59437MH2;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = ConnectionPro;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
+				INFOPLIST_KEY_NSContactsUsageDescription = "Kithly uses your contacts to help you import connections from your phonebook.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

@@ -37,7 +37,8 @@ CITIES = [
 COMPANIES = [
     "TechCorp", "StartupInc", "DesignCo", "InnovateLtd", "FutureSystems", 
     "Global Dynamics", "Acme Corp", "Omni Consumer", "Cyberdyne", "Soylent Corp",
-    "Umbrella Corp", "Stark Ind", "Wayne Ent", "Massive Dynamic", "Hooli"
+    "Umbrella Corp", "Stark Ind", "Wayne Ent", "Massive Dynamic", "Hooli",
+    "Initech", "Pied Piper", "Aperture Science", "Black Mesa", "Tessier-Ashpool"
 ]
 
 ROLES = [
@@ -53,15 +54,18 @@ INDUSTRIES = [
     "Media", "Real Estate", "Automotive", "Energy", "Consulting"
 ]
 
-HOW_MET = [
-    "Tech Conference 2024", "LinkedIn", "Mutual Friend (Sarah)", "Former Colleague", 
-    "College Roommate", "Twitter/X", "Cold Email", "Industry Meetup", "Y Combinator Demo Day",
-    "Local Coffee Shop", "Hackathon"
-]
+# --- New Tag Categories ---
 
-TAGS_POOL = [
-    "vip", "hiring", "mentor", "investor", "friend", "lead", "partner", "urgent", 
-    "warm", "tech", "founder", "local", "alumni", "recruiter", "gatekeeper"
+TAG_CATEGORIES = {
+    "howMet": ['Conference', 'LinkedIn', 'Warm Intro', 'Cold Outreach', 'Work', 'School', 'Meetup', 'Social Event', 'Online Community', 'Alumni'],
+    "relationshipType": ['Colleague', 'Client', 'Partner', 'Mentor', 'Mentee', 'Friend', 'Acquaintance', 'Advisor', 'Investor', 'Vendor'],
+    "connectionStrength": ['Inner Circle', 'Close', 'Familiar', 'Dormant', 'New'],
+    "goals": ['Career Growth', 'Business Lead', 'Knowledge Share', 'Collaboration', 'Referral', 'Friendship', 'Industry Intel']
+}
+
+CUSTOM_TAGS_POOL = [
+    "tennis", "hiking", "crypto", "ai-enthusiast", "stanford-alum", "ex-google", 
+    "angel-investor", "hiring-manager", "series-a", "coffee-lover", "book-club", "speaker"
 ]
 
 LOG_TYPES = ["call", "email", "meeting", "social"]
@@ -116,12 +120,30 @@ def generate_connection():
     last = random.choice(LAST_NAMES)
     company = random.choice(COMPANIES)
     
-    # Email generation
     email = f"{first.lower()}.{last.lower()}@{company.lower().replace(' ', '')}.com"
     
-    # Tags (1-3 random tags)
-    num_tags = random.randint(0, 3)
-    tags = random.sample(TAGS_POOL, num_tags)
+    # Generate Tags intelligently
+    tags = []
+    
+    # 1. How Met (Pick 1)
+    how_met = random.choice(TAG_CATEGORIES["howMet"])
+    tags.append(how_met)
+    
+    # 2. Relationship Type (Pick 1-2)
+    rel_type = random.sample(TAG_CATEGORIES["relationshipType"], random.randint(1, 2))
+    tags.extend(rel_type)
+    
+    # 3. Connection Strength (Pick 1)
+    strength = random.choice(TAG_CATEGORIES["connectionStrength"])
+    tags.append(strength)
+    
+    # 4. Goals (Pick 0-2)
+    goals_tags = random.sample(TAG_CATEGORIES["goals"], random.randint(0, 2))
+    tags.extend(goals_tags)
+    
+    # 5. Custom Tags (Pick 0-1)
+    if random.random() > 0.7:
+        tags.append(random.choice(CUSTOM_TAGS_POOL))
     
     return {
         "name": f"{first} {last}",
@@ -130,13 +152,12 @@ def generate_connection():
         "role": random.choice(ROLES),
         "location": random.choice(CITIES),
         "industry": random.choice(INDUSTRIES),
-        "howMet": random.choice(HOW_MET),
+        "howMet": how_met, # For backward compatibility or if backend uses it separately
         "frequency": random.choice([7, 14, 30, 60, 90]),
         "notes": f"Generated testing connection. Key interest: {random.choice(TOPICS)}.",
         "linkedin": f"https://linkedin.com/in/{first.lower()}-{last.lower()}-{random.randint(100, 999)}",
         "goals": f"Explore {random.choice(TOPICS)} opportunities.",
         "tags": tags
-        # lastContact will be updated if logs are added, or set randomly later
     }
 
 def generate_log(connection_id, date_str):
@@ -149,8 +170,8 @@ def generate_log(connection_id, date_str):
         "connection_id": connection_id,
         "type": log_type,
         "notes": note,
-        "tags": random.sample(TAGS_POOL, random.randint(0, 2)),
-        "created_at": date_str  # Pass the date for backdating
+        "tags": [], # Simplified for logs
+        "created_at": date_str
     }
 
 # --- Main Logic ---
@@ -167,17 +188,9 @@ def register_and_login(name, email):
         print(f"  Got magic link: {magic_link}")
         
         # 2. Extract Token
-        # Link format: ...verify?token=XYZ
         token = magic_link.split("token=")[1]
         
         # 3. Verify
-        verify_payload = {"token": token} # Actually verify endpoint takes query param? No, body? 
-        # Checking server/main.py: @app.post("/auth/verify") def verify_token(token: str ...
-        # It takes `token` as a QUERY PARAMETER based on `token: str` default binding in FastAPI 
-        # usually defaults to query if simple type, OR body if Pydantic model.
-        # Wait, `token: str` matches query param `?token=...`.
-        # Let's try query param.
-        
         verify_res = requests.post(f"{API_URL}/auth/verify?token={token}")
         verify_res.raise_for_status()
         verify_data = verify_res.json()
@@ -219,21 +232,17 @@ def main():
     print(f"Successfully created {len(created_connections)} connections.")
     
     # 3. Add logs to 50+ connections
-    # Shuffle and pick 60
     selected_conns = random.sample(created_connections, k=60)
     print(f"Generating logs for {len(selected_conns)} connections...")
     
     for i, conn in enumerate(selected_conns):
-        # Normal distribution for num logs: mean 10, sigma 5, clamped 1-30
         num_logs = int(random.gauss(10, 5))
         num_logs = max(1, min(30, num_logs))
         
-        # Generate dates spread over last 180 days, sorted chronologically
         log_dates = []
         for _ in range(num_logs):
             days_back = random.randint(0, 180)
             log_date = datetime.datetime.now() - datetime.timedelta(days=days_back)
-            # Add random time
             log_date = log_date.replace(
                 hour=random.randint(9, 18), 
                 minute=random.randint(0, 59), 
@@ -241,56 +250,34 @@ def main():
             )
             log_dates.append(log_date)
         
-        # Sort chronologically (oldest first)
         log_dates.sort()
         
-        # Create logs with their respective dates
         most_recent_date = None
         for log_date in log_dates:
             log_date_str = log_date.isoformat() + "Z"
             log_data = generate_log(conn["id"], log_date_str)
             try:
-                requests.post(f"{API_URL}/logs", json=log_data, headers=headers)
+                res = requests.post(f"{API_URL}/logs", json=log_data, headers=headers)
+                res.raise_for_status()
                 most_recent_date = log_date
             except Exception as e:
-                print(f"Error adding log: {e}")
+                print(f"Error adding log for {conn['name']}: {e}")
         
-        # Update connection lastContact to the most recent log date
         if most_recent_date:
             update_payload = {
                 "lastContact": most_recent_date.isoformat() + "Z"
             }
-        else:
-            # Fallback: set random last contact
-            frequency = conn["frequency"]
-            status_roll = random.random()
-            
-            if status_roll < 0.2: 
-                # 20% Overdue (days back > frequency)
-                days_back = random.randint(frequency + 1, frequency + 60)
-            elif status_roll < 0.4:
-                # 20% Due Soon (days back close to frequency)
-                days_back = random.randint(max(1, frequency - 7), frequency - 1)
-            else:
-                # 60% Healthy (days back < frequency - 7)
-                days_back = random.randint(0, max(1, frequency - 8))
-                
-            last_contact_date = datetime.datetime.now() - datetime.timedelta(days=days_back)
-            update_payload = {
-                "lastContact": last_contact_date.isoformat() + "Z"
-            }
-        
-        try:
-            requests.put(f"{API_URL}/connections/{conn['id']}", json=update_payload, headers=headers)
-        except Exception as e:
-            print(f"Error updating lastContact: {e}")
+            try:
+                requests.put(f"{API_URL}/connections/{conn['id']}", json=update_payload, headers=headers)
+            except Exception as e:
+                print(f"Error updating lastContact: {e}")
             
         if i % 10 == 0:
             print(f"  Processed logs for {i+1}/{len(selected_conns)} connections...")
 
     print("=== Seeding Complete ===")
     print(f"Account Email: {email}")
-    print("You can verify using the magic link printed above (if you grabbed the token logic correctly) or just check dashboard.")
+    print("You can verify using the magic link printed above or just check dashboard.")
 
 if __name__ == "__main__":
     main()

@@ -80,7 +80,15 @@ final class AuthViewModel {
 
     private func sendMagicLink(name: String) async {
         do {
-            let response = try await AuthService.register(name: name, email: registerEmail)
+            let response: RegisterResponse
+            if name.isEmpty {
+                // Existing user login
+                response = try await AuthService.login(email: registerEmail)
+            } else {
+                // New user registration
+                response = try await AuthService.register(name: name, email: registerEmail)
+            }
+            
             magicLink = response.magicLink
             registerStep = .checkEmail
         } catch {
@@ -129,7 +137,7 @@ final class AuthViewModel {
         await verifyToken(token)
     }
 
-    // MARK: - Logout
+    // MARK: - Logout & Deletion
 
     func logout() {
         KeychainService.shared.deleteToken()
@@ -139,6 +147,13 @@ final class AuthViewModel {
         registerEmail = ""
         registerName = ""
         magicLink = nil
+    }
+
+    func deleteAccount() async throws {
+        try await AuthService.deleteAccount()
+        await MainActor.run {
+            logout()
+        }
     }
 
     // MARK: - Update User

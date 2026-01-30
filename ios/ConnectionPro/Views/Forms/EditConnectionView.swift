@@ -22,8 +22,12 @@ struct EditConnectionView: View {
             notes: $viewModel.notes,
             goals: $viewModel.goals,
             tags: $viewModel.tags,
-            frequency: $viewModel.frequency
+            frequency: $viewModel.frequency,
+            availableTags: viewModel.availableTags
         )
+        .task {
+            await viewModel.loadTags()
+        }
         .navigationTitle("Edit Connection")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

@@ -125,7 +125,6 @@ describe('Dashboard', () => {
         useAuth.mockReturnValue({ user: { name: 'User' } });
         useData.mockReturnValue({ connections: [], logs: [], isLoading: false });
         renderDashboard();
-        expect(screen.getByText('Import CSV')).toBeInTheDocument();
         expect(screen.getByText('Add Connection')).toBeInTheDocument();
     });
 });

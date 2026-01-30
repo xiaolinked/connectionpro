@@ -2,6 +2,8 @@ import SwiftUI
 
 struct ConnectionListView: View {
     @State private var viewModel = ConnectionListViewModel()
+    @State private var showingBulkImport = false
+    @State private var showingNewConnection = false
 
     var body: some View {
         Group {
@@ -35,6 +37,8 @@ struct ConnectionListView: View {
                                 let connection = viewModel.filteredConnections[index]
                                 await viewModel.deleteConnection(connection)
                             }
+                            HapticService.success()
+                            ToastManager.shared.show("Connection deleted", type: .info, withHaptic: false)
                         }
                     }
                 }
@@ -74,16 +78,36 @@ struct ConnectionListView: View {
             }
 
             ToolbarItem(placement: .topBarTrailing) {
-                NavigationLink {
-                    NewConnectionView()
+                Menu {
+                    Button {
+                        showingNewConnection = true
+                    } label: {
+                        Label("Add Manually", systemImage: "square.and.pencil")
+                    }
+
+                    Button {
+                        showingBulkImport = true
+                    } label: {
+                        Label("Import from Contacts", systemImage: "person.crop.circle.badge.plus")
+                    }
                 } label: {
                     Image(systemName: "plus")
                 }
             }
         }
+        .navigationDestination(isPresented: $showingNewConnection) {
+            NewConnectionView()
+        }
+        .sheet(isPresented: $showingBulkImport) {
+            ContactPickerView { (_: [PhonebookContact]) in
+                // Refresh the list after import
+                Task { await viewModel.loadConnections() }
+            }
+        }
         .task {
             await viewModel.loadConnections()
         }
+        .toastOverlay()
     }
 }
 

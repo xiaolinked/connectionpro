@@ -2,19 +2,43 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { api } from '../services/api';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useData } from '../context/DataContext';
+import { useToast, TOAST_TYPES } from '../context/ToastContext';
 import { Link as LinkIcon, Briefcase, Clock, Info, Plus, Mail, Target } from 'lucide-react';
 
 const NewConnection = () => {
     const navigate = useNavigate();
     const { addConnection } = useData();
+    const { showToast } = useToast();
     const [searchParams] = useSearchParams();
 
     // 4.1 Identity Section (Required)
     const [name, setName] = useState('');
 
-    // 4.2 Quick Context Tags
-    const [selectedTags, setSelectedTags] = useState([]);
-    const defaultTags = ['Work', 'Friend', 'Mentor', 'Peer', 'School', 'Hobby', 'Family'];
+    // 4.2 Multi-Category Tags
+    // 4.2 Multi-Category Tags
+    const [tagCategories, setTagCategories] = useState({});
+    const [selectedByCategory, setSelectedByCategory] = useState({});
+
+    useEffect(() => {
+        const loadTags = async () => {
+            try {
+                const data = await api.getTags('connection');
+                setTagCategories(data);
+
+                // Initialize selection state
+                const initialSelection = {};
+                Object.entries(data).forEach(([key, config]) => {
+                    initialSelection[key] = config.singleSelect ? null : [];
+                });
+                setSelectedByCategory(initialSelection);
+            } catch (error) {
+                console.error('Failed to load tags:', error);
+                showToast('Failed to load tags', TOAST_TYPES.ERROR);
+            }
+        };
+        loadTags();
+    }, []);
+    const [customTags, setCustomTags] = useState([]);
     const [customTagInput, setCustomTagInput] = useState('');
     const [showCustomTagInput, setShowCustomTagInput] = useState(false);
 
@@ -126,20 +150,42 @@ const NewConnection = () => {
         }
     };
 
-    const toggleTag = (tag) => {
-        if (selectedTags.includes(tag)) {
-            setSelectedTags(prev => prev.filter(t => t !== tag));
-        } else {
-            setSelectedTags(prev => [...prev, tag]);
-        }
+    const toggleCategoryTag = (categoryKey, tag) => {
+        const category = tagCategories[categoryKey];
+        if (!category) return;
+
+        setSelectedByCategory(prev => {
+            const current = prev[categoryKey];
+
+            if (category.singleSelect) {
+                return {
+                    ...prev,
+                    [categoryKey]: current === tag ? null : tag
+                };
+            } else {
+                const currentList = Array.isArray(current) ? current : [];
+                const isSelected = currentList.includes(tag);
+                return {
+                    ...prev,
+                    [categoryKey]: isSelected
+                        ? currentList.filter(t => t !== tag)
+                        : [...currentList, tag]
+                };
+            }
+        });
     };
 
     const addCustomTag = () => {
-        if (customTagInput.trim()) {
-            toggleTag(customTagInput.trim());
+        const tag = customTagInput.trim();
+        if (tag && !customTags.includes(tag)) {
+            setCustomTags(prev => [...prev, tag]);
             setCustomTagInput('');
             setShowCustomTagInput(false);
         }
+    };
+
+    const removeCustomTag = (tag) => {
+        setCustomTags(prev => prev.filter(t => t !== tag));
     };
 
     const handleSubmit = (e) => {
@@ -153,31 +199,42 @@ const NewConnection = () => {
         else if (cadence === 'custom') frequencyDays = parseInt(customFrequency) || 90;
         else if (cadence === 'none') frequencyDays = 0;
 
+        // Combine all tags
+        const allTags = [];
+        Object.values(selectedByCategory).forEach(value => {
+            if (Array.isArray(value)) allTags.push(...value);
+            else if (value) allTags.push(value);
+        });
+        allTags.push(...customTags);
+
         const handleProcess = async () => {
             try {
                 const conn = await addConnection({
                     name,
-                    tags: selectedTags,
+                    tags: allTags,
                     linkedin: linkedinUrl,
                     company,
                     role,
                     industry,
                     location: city || '',
                     email,
-                    goals,
+                    goals: goals,
                     notes,
                     frequency: frequencyDays,
-                    howMet: selectedTags.length > 0 ? selectedTags[0] : 'Quick Add',
+                    howMet: selectedByCategory.howMet || (allTags.length > 0 ? allTags[0] : 'Quick Add'),
                     lastContact: null
                 });
 
                 if (conn && conn.id) {
+                    showToast('Connection saved successfully!', TOAST_TYPES.SUCCESS);
                     navigate(`/connections/${conn.id}`);
                 } else {
+                    showToast('Connection saved!', TOAST_TYPES.SUCCESS);
                     navigate('/connections');
                 }
             } catch (err) {
                 console.error("Failed to add connection", err);
+                showToast('Failed to save connection. Please try again.', TOAST_TYPES.ERROR);
             }
         };
 
@@ -217,72 +274,109 @@ const NewConnection = () => {
                         />
                     </div>
 
-                    {/* 4.2 Quick Context Tags */}
+                    {/* 4.2 Multi-Category Context Tags */}
                     <div style={{ marginBottom: '2rem' }}>
-                        <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--color-text-secondary)' }}>
-                            How do you know this person?
-                        </label>
-                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                            {defaultTags.map(tag => (
-                                <button
-                                    key={tag}
-                                    type="button"
-                                    onClick={() => toggleTag(tag)}
-                                    style={{
-                                        padding: '0.5rem 1rem',
-                                        borderRadius: '2rem',
-                                        border: `1px solid ${selectedTags.includes(tag) ? 'var(--color-accent-primary)' : 'var(--color-border)'}`,
-                                        backgroundColor: selectedTags.includes(tag) ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-                                        color: selectedTags.includes(tag) ? 'var(--color-accent-primary)' : 'var(--color-text-secondary)',
-                                        cursor: 'pointer',
-                                        transition: 'all 0.2s',
-                                        fontSize: '0.9rem'
-                                    }}
-                                >
-                                    {tag}
-                                </button>
-                            ))}
+                        <div style={{ display: 'grid', gap: '2rem' }}>
+                            {Object.entries(tagCategories).map(([key, category]) => (
+                                <div key={key}>
+                                    <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: '600', marginBottom: '1rem', color: 'var(--color-text-secondary)' }}>
+                                        {category.label}
+                                    </label>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                                        {category.options.map(tag => {
+                                            const isSelected = category.singleSelect
+                                                ? selectedByCategory[key] === tag
+                                                : selectedByCategory[key].includes(tag);
 
-                            {!showCustomTagInput ? (
-                                <button
-                                    type="button"
-                                    onClick={() => setShowCustomTagInput(true)}
-                                    style={{
-                                        padding: '0.5rem 1rem',
-                                        borderRadius: '2rem',
-                                        border: '1px dashed var(--color-border)',
-                                        backgroundColor: 'transparent',
-                                        color: 'var(--color-text-secondary)',
-                                        cursor: 'pointer',
-                                        fontSize: '0.9rem',
-                                        display: 'flex',
-                                        alignItems: 'center'
-                                    }}
-                                >
-                                    <Plus size={14} style={{ marginRight: '4px' }} /> Custom
-                                </button>
-                            ) : (
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <input
-                                        type="text"
-                                        autoFocus
-                                        value={customTagInput}
-                                        onChange={e => setCustomTagInput(e.target.value)}
-                                        onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCustomTag())}
-                                        onBlur={addCustomTag}
-                                        placeholder="Tag name"
-                                        style={{
-                                            padding: '0.5rem 1rem',
-                                            borderRadius: '2rem',
-                                            border: '1px solid var(--color-accent-primary)',
-                                            backgroundColor: 'var(--color-bg-primary)',
-                                            color: 'var(--color-text-primary)',
-                                            fontSize: '0.9rem',
-                                            width: '120px'
-                                        }}
-                                    />
+                                            return (
+                                                <button
+                                                    key={tag}
+                                                    type="button"
+                                                    onClick={() => toggleCategoryTag(key, tag)}
+                                                    style={{
+                                                        padding: '0.5rem 1rem',
+                                                        borderRadius: '2rem',
+                                                        border: `1px solid ${isSelected ? 'var(--color-accent-primary)' : 'var(--color-border)'}`,
+                                                        backgroundColor: isSelected ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
+                                                        color: isSelected ? 'var(--color-accent-primary)' : 'var(--color-text-secondary)',
+                                                        cursor: 'pointer',
+                                                        transition: 'all 0.2s',
+                                                        fontSize: '0.9rem'
+                                                    }}
+                                                >
+                                                    {tag}
+                                                </button>
+                                            );
+                                        })}
+
+                                        {/* Add custom tag button/input inline with custom category */}
+                                        {key === 'custom' && (
+                                            <>
+                                                {customTags.map(tag => (
+                                                    <button
+                                                        key={tag}
+                                                        type="button"
+                                                        onClick={() => removeCustomTag(tag)}
+                                                        style={{
+                                                            padding: '0.5rem 1rem',
+                                                            borderRadius: '2rem',
+                                                            border: '1px solid var(--color-accent-primary)',
+                                                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                                                            color: 'var(--color-accent-primary)',
+                                                            cursor: 'pointer',
+                                                            transition: 'all 0.2s',
+                                                            fontSize: '0.9rem'
+                                                        }}
+                                                    >
+                                                        {tag} ×
+                                                    </button>
+                                                ))}
+
+                                                {!showCustomTagInput ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setShowCustomTagInput(true)}
+                                                        style={{
+                                                            padding: '0.5rem 1rem',
+                                                            borderRadius: '2rem',
+                                                            border: '1px dashed var(--color-border)',
+                                                            backgroundColor: 'transparent',
+                                                            color: 'var(--color-text-secondary)',
+                                                            cursor: 'pointer',
+                                                            fontSize: '0.9rem',
+                                                            display: 'flex',
+                                                            alignItems: 'center'
+                                                        }}
+                                                    >
+                                                        <Plus size={14} style={{ marginRight: '4px' }} /> Add Custom
+                                                    </button>
+                                                ) : (
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                        <input
+                                                            type="text"
+                                                            autoFocus
+                                                            value={customTagInput}
+                                                            onChange={e => setCustomTagInput(e.target.value)}
+                                                            onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCustomTag())}
+                                                            onBlur={addCustomTag}
+                                                            placeholder="Tag name"
+                                                            style={{
+                                                                padding: '0.5rem 1rem',
+                                                                borderRadius: '2rem',
+                                                                border: '1px solid var(--color-accent-primary)',
+                                                                backgroundColor: 'var(--color-bg-primary)',
+                                                                color: 'var(--color-text-primary)',
+                                                                fontSize: '0.9rem',
+                                                                width: '120px'
+                                                            }}
+                                                        />
+                                                    </div>
+                                                )}
+                                            </>
+                                        )}
+                                    </div>
                                 </div>
-                            )}
+                            ))}
                         </div>
                     </div>
 

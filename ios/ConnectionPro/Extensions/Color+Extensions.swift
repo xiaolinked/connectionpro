@@ -1,9 +1,11 @@
 import SwiftUI
 
 extension Color {
-    // Primary brand colors
-    static let appPrimary = Color(red: 79/255, green: 70/255, blue: 229/255)   // Indigo-600
-    static let appSecondary = Color(red: 99/255, green: 102/255, blue: 241/255) // Indigo-500
+    // Primary brand colors (Kithly)
+    // #667eea -> RGB(102, 126, 234)
+    static let appPrimary = Color(red: 102/255, green: 126/255, blue: 234/255)
+    // #764ba2 -> RGB(118, 75, 162)
+    static let appSecondary = Color(red: 118/255, green: 75/255, blue: 162/255)
 
     // Status colors
     static let statusHealthy = Color.green
@@ -11,10 +13,19 @@ extension Color {
     static let statusOverdue = Color.red
 
     // Background colors
-    static let cardBackground = Color(.systemBackground)
-    static let sectionBackground = Color(.secondarySystemBackground)
+    static let cardBackground = Color(.secondarySystemGroupedBackground)
+    static let sectionBackground = Color(.systemGroupedBackground)
+
+    // Brand Gradients
+    static var brandGradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [appPrimary, appSecondary]),
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+    }
 
     // Gradient for avatars
-    static let avatarGradientStart = Color(red: 99/255, green: 102/255, blue: 241/255)
-    static let avatarGradientEnd = Color(red: 168/255, green: 85/255, blue: 247/255)
+    static let avatarGradientStart = appPrimary
+    static let avatarGradientEnd = appSecondary
 }

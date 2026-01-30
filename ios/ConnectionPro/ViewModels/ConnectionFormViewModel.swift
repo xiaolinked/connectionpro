@@ -23,6 +23,8 @@ final class ConnectionFormViewModel {
     let isEditMode: Bool
     private let existingConnection: ConnectionRead?
 
+    var availableTags: [String: [TagDefinition]] = [:]
+
     init(connection: ConnectionRead? = nil) {
         self.isEditMode = connection != nil
         self.existingConnection = connection
@@ -39,6 +41,16 @@ final class ConnectionFormViewModel {
             goals = c.goals ?? ""
             tags = c.tags
             frequency = c.frequency
+        }
+    }
+    
+    func loadTags() async {
+        do {
+            let tags = try await TagService.getTags(type: "connection")
+            // Group by category
+            availableTags = Dictionary(grouping: tags, by: { $0.category })
+        } catch {
+            print("Failed to load tags: \(error)")
         }
     }
 

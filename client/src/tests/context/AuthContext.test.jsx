@@ -53,6 +53,7 @@ function renderWithAuth() {
 describe('AuthContext', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.resetAllMocks(); // Reset mock implementations too
         mockStore = {};
         // Re-setup getItem after clearAllMocks
         mockLocalStorage.getItem.mockImplementation((key) => mockStore[key] ?? null);
@@ -133,10 +134,102 @@ describe('AuthContext', () => {
 
         renderWithAuth();
 
+        // Wait for getMe to be called (it will reject)
+        await waitFor(() => {
+            expect(api.getMe).toHaveBeenCalled();
+        });
+
+        // After getMe rejects, logout() should be called, clearing the token
+        await waitFor(() => {
+            expect(mockStore['cp_token']).toBeUndefined();
+        });
+
+        expect(screen.getByTestId('loading').textContent).toBe('false');
+        expect(screen.getByTestId('authenticated').textContent).toBe('false');
+    });
+
+    // Regression test: Prevent race condition where API calls are made before token is set
+    // Issue: When navigating to a detail page, components could call API before useEffect set the token
+    it('sets API token synchronously on mount when token exists in localStorage', () => {
+        mockStore['cp_token'] = 'sync-token';
+        api.getMe.mockResolvedValueOnce({ id: '1', name: 'User', email: 'a@b.com' });
+
+        // Before render completes, the token should already be set on the API
+        // This prevents race conditions where child components make API calls before useEffect runs
+        renderWithAuth();
+
+        // Check that setToken was called IMMEDIATELY during initialization (synchronously)
+        // This is the first call, before any async operations complete
+        expect(api.setToken).toHaveBeenCalledWith('sync-token');
+
+        // Verify it was called at least once (during initialization)
+        expect(api.setToken.mock.calls[0][0]).toBe('sync-token');
+    });
+
+    // Regression test: After login(), the useEffect should NOT call getMe() again
+    // Issue: login() sets user data, but useEffect would then call getMe() creating a race condition
+    it('does not call getMe after login() since user is already set', async () => {
+        renderWithAuth();
+
         await waitFor(() => {
             expect(screen.getByTestId('loading').textContent).toBe('false');
         });
-        expect(screen.getByTestId('authenticated').textContent).toBe('false');
-        expect(mockStore['cp_token']).toBeUndefined();
+
+        // Click login button
+        await act(async () => {
+            screen.getByTestId('login-btn').click();
+        });
+
+        // Wait for state to settle
+        await waitFor(() => {
+            expect(screen.getByTestId('authenticated').textContent).toBe('true');
+        });
+
+        // getMe should NOT have been called because login() already provided user data
+        // The loginCalledRef flag should have prevented the redundant call
+        expect(api.getMe).not.toHaveBeenCalled();
+    });
+
+    // Regression test: Ensure API token is set before any child component effects run
+    // This tests the timing of token initialization
+    it('token is available immediately for child component API calls', () => {
+        mockStore['cp_token'] = 'child-component-token';
+        api.getMe.mockResolvedValueOnce({ id: '1', name: 'User', email: 'a@b.com' });
+
+        // Track the order of setToken calls
+        const setTokenCalls = [];
+        api.setToken.mockImplementation((token) => {
+            setTokenCalls.push({ token, timestamp: Date.now() });
+        });
+
+        renderWithAuth();
+
+        // The first setToken call should happen synchronously with the passed token
+        expect(setTokenCalls.length).toBeGreaterThanOrEqual(1);
+        expect(setTokenCalls[0].token).toBe('child-component-token');
+    });
+
+    // Test that authentication state persists across component re-renders
+    it('maintains authentication state across re-renders', async () => {
+        mockStore['cp_token'] = 'persistent-token';
+        api.getMe.mockResolvedValue({ id: '1', name: 'Persistent User', email: 'a@b.com' });
+
+        const { rerender } = renderWithAuth();
+
+        await waitFor(() => {
+            expect(screen.getByTestId('authenticated').textContent).toBe('true');
+        });
+
+        // Re-render the component tree
+        rerender(
+            <AuthProvider>
+                <AuthConsumer />
+            </AuthProvider>
+        );
+
+        // Authentication should still be valid
+        expect(screen.getByTestId('authenticated').textContent).toBe('true');
+        expect(screen.getByTestId('user').textContent).toBe('Persistent User');
     });
 });
+

@@ -3,6 +3,7 @@ import SwiftUI
 struct NewConnectionView: View {
     @State private var viewModel = ConnectionFormViewModel()
     @Environment(\.dismiss) private var dismiss
+    @State private var showingContactPicker = false
 
     var body: some View {
         ConnectionFormFields(
@@ -16,8 +17,12 @@ struct NewConnectionView: View {
             notes: $viewModel.notes,
             goals: $viewModel.goals,
             tags: $viewModel.tags,
-            frequency: $viewModel.frequency
+            frequency: $viewModel.frequency,
+            availableTags: viewModel.availableTags
         )
+        .task {
+            await viewModel.loadTags()
+        }
         .navigationTitle("New Connection")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
@@ -26,12 +31,23 @@ struct NewConnectionView: View {
                     dismiss()
                 }
             }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingContactPicker = true
+                } label: {
+                    Image(systemName: "person.crop.circle.badge.plus")
+                }
+            }
 
             ToolbarItem(placement: .confirmationAction) {
                 Button {
                     Task {
                         if await viewModel.save() != nil {
+                            ToastManager.shared.show("Connection saved!", type: .success)
                             dismiss()
+                        } else if viewModel.errorMessage != nil {
+                            ToastManager.shared.show(viewModel.errorMessage ?? "Failed to save", type: .error)
                         }
                     }
                 } label: {
@@ -44,15 +60,16 @@ struct NewConnectionView: View {
                 .disabled(!viewModel.isValid || viewModel.isSaving)
             }
         }
-        .alert("Error", isPresented: .constant(viewModel.errorMessage != nil)) {
-            Button("OK") {
-                viewModel.errorMessage = nil
-            }
-        } message: {
-            if let error = viewModel.errorMessage {
-                Text(error)
+        .sheet(isPresented: $showingContactPicker) {
+            ContactPickerView { contact in
+                // Pre-fill form with selected contact
+                viewModel.name = contact.name
+                viewModel.email = contact.email ?? ""
+                viewModel.company = contact.company ?? ""
+                viewModel.role = contact.jobTitle ?? ""
             }
         }
+        .toastOverlay()
     }
 }
 
