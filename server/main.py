@@ -14,7 +14,10 @@ import uuid
 import datetime
 import asyncio
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from auth_utils import create_access_token, create_magic_link_token, verify_magic_link_token, decode_access_token
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from firebase_auth import verify_firebase_token
+
+
 
 # Rate limiting
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -29,21 +32,33 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 security = HTTPBearer()
 
+
 async def get_current_user(
     auth: HTTPAuthorizationCredentials = Depends(security),
     session: Session = Depends(get_session)
 ):
-    payload = decode_access_token(auth.credentials)
-    if not payload:
+    token = auth.credentials
+    decoded_token = verify_firebase_token(token)
+    
+    if not decoded_token:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid or expired token",
         )
-    user_id = payload.get("sub")
-    user = session.get(User, user_id)
+        
+    uid = decoded_token.get("uid")
+    # Lookup user by firebase_uid, not primary key
+    statement = select(User).where(User.firebase_uid == uid)
+    user = session.exec(statement).first()
+    
+    # If user doesn't exist in our DB yet, but has valid Firebase token,
+    # we could auto-create OR reject. 
+    # For safety/explicit flow, we reject and expect /auth/login to be called first.
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="User not found in database")
+        
     return user
+
 
 # CORS Setup
 import os
@@ -144,94 +159,68 @@ def on_startup():
 
 # ===== AUTH ENDPOINTS =====
 
-@app.get("/auth/check-email")
-@limiter.limit("10/minute")
-def check_email(request: Request, email: str, session: Session = Depends(get_session)):
-    """Check if an email is already registered."""
-    email = email.lower().strip()
-    statement = select(User).where(User.email == email)
-    existing_user = session.exec(statement).first()
-    return {"exists": existing_user is not None}
-
-@app.post("/auth/register", status_code=status.HTTP_201_CREATED)
-@limiter.limit("5/minute")
-def register(request: Request, user_data: UserCreate, session: Session = Depends(get_session)):
-    email = user_data.email.lower().strip()
-    # Check if user already exists
-    statement = select(User).where(User.email == email)
-    existing_user = session.exec(statement).first()
-
-    if existing_user:
-        user = existing_user
-        # Update name if it was provided (optional but good for syncing)
-        if user_data.name and user_data.name != user.name:
-            user.name = user_data.name
-            session.add(user)
-            session.commit()
-            session.refresh(user)
-    else:
-        user = User(
-            id=str(uuid.uuid4()),
-            email=email,
-            name=user_data.name
-        )
-        session.add(user)
-        session.commit()
-        session.refresh(user)
-
-    # Create magic link token
-    token = create_magic_link_token(user.email)
-    
-    # In a real app, send email here. For now, log it or return it.
-    magic_link = f"{frontend_url or 'http://localhost:5173'}/verify?token={token}"
-    print(f"MAGIC LINK: {magic_link}")
-    
-    return {"message": "Magic link sent", "token": token, "magic_link": magic_link} # returning token/link for testing
-
 @app.post("/auth/login")
 @limiter.limit("5/minute")
 def login(request: Request, body: dict, session: Session = Depends(get_session)):
-    """Send magic link to existing user without modifying their data."""
-    email = body.get("email", "").lower().strip()
-    if not email:
-        raise HTTPException(status_code=400, detail="Email is required")
-    
-    # Check if user exists
-    statement = select(User).where(User.email == email)
-    user = session.exec(statement).first()
-    
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found")
-    
-    # Create magic link token
-    token = create_magic_link_token(user.email)
-    
-    magic_link = f"{frontend_url or 'http://localhost:5173'}/verify?token={token}"
-    print(f"MAGIC LINK: {magic_link}")
-    
-    return {"message": "Magic link sent", "token": token, "magic_link": magic_link}
-
-@app.post("/auth/verify")
-@limiter.limit("10/minute")
-def verify_magic_link(request: Request, body: dict, session: Session = Depends(get_session)):
+    """
+    Verifies Firebase token and syncs user to local database.
+    Call this after Firebase login on the client.
+    """
     token = body.get("token")
     if not token:
-        raise HTTPException(status_code=400, detail="Token required")
+        raise HTTPException(status_code=400, detail="Token is required")
     
-    email = verify_magic_link_token(token)
-    if not email:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    decoded_token = verify_firebase_token(token)
+    if not decoded_token:
+        raise HTTPException(status_code=401, detail="Invalid token")
         
-    statement = select(User).where(User.email == email)
+    uid = decoded_token.get("uid")
+    email = decoded_token.get("email")
+    phone_number = decoded_token.get("phone_number")
+    
+    # Fallback name if missing (e.g. phone auth)
+    name = decoded_token.get("name")
+    if not name:
+        if email:
+            name = email.split("@")[0]
+        elif phone_number:
+            name = phone_number
+        else:
+            name = "User"
+    
+    
+    # Check if user exists by firebase_uid
+    statement = select(User).where(User.firebase_uid == uid)
     user = session.exec(statement).first()
     
-    if not user:
-        # Should have benefitted from register first, but if not, create?
-        # Better to fail to be safe.
-        raise HTTPException(status_code=404, detail="User not found")
+    if user:
+        # Update fields if changed
+        if email and user.email != email:
+            user.email = email
+        if phone_number and user.phone_number != phone_number:
+            user.phone_number = phone_number
+        if name and user.name != name and user.name == "User": 
+             # Only auto-update name if it was generic "User"
+             # Or maybe we rely on frontend Onboarding to set real name?
+             pass
+        session.add(user)
+    else:
+        # Create new user
+        # New users are not onboarded by default (model default=False)
+        user = User(
+            firebase_uid=uid,
+            email=email,
+            phone_number=phone_number,
+            name=name
+        )
+        session.add(user)
         
-    access_token = create_access_token(data={"sub": user.id})
-    return {"access_token": access_token, "token_type": "bearer", "user": user}
+    session.commit()
+    session.refresh(user)
+    
+    return {"message": "Login successful", "user": user}
+
+
 
 @app.get("/users/me", response_model=UserRead)
 def read_users_me(current_user: User = Depends(get_current_user)):
@@ -243,8 +232,10 @@ def update_user_me(
     session: Session = Depends(get_session),
     current_user: User = Depends(get_current_user)
 ):
-    if user_update.name:
+    if user_update.name is not None:
         current_user.name = user_update.name
+    if user_update.is_onboarded is not None:
+        current_user.is_onboarded = user_update.is_onboarded
     
     session.add(current_user)
     session.commit()

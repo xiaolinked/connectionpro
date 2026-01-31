@@ -14,11 +14,13 @@ import ConnectionDetail from './pages/ConnectionDetail';
 import FollowUps from './pages/FollowUps';
 import ImportData from './pages/ImportData';
 import Register from './pages/Register';
-import VerifyAuth from './pages/VerifyAuth';
+import Onboarding from './pages/Onboarding';
+
+
 import Settings from './pages/Settings';
 
-const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, isLoading } = useAuth();
+const ProtectedRoute = ({ children, requireOnboarding = true }) => {
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return <div style={{ display: 'flex', justifyContent: 'center', marginTop: '100px' }}>Loading...</div>;
@@ -28,8 +30,19 @@ const ProtectedRoute = ({ children }) => {
     return <Navigate to="/login" replace />;
   }
 
-  return <Layout>{children}</Layout>;
+  // If user is not onboarded and tries to access a restricted page
+  if (requireOnboarding && user?.is_onboarded === false) {
+    return <Navigate to="/onboarding" replace />;
+  }
+
+  // If user IS onboarded and tries to access onboarding page
+  if (!requireOnboarding && user?.is_onboarded === true) {
+    return <Navigate to="/" replace />;
+  }
+
+  return requireOnboarding ? <Layout>{children}</Layout> : children;
 };
+
 
 function App() {
   return (
@@ -42,10 +55,12 @@ function App() {
                 {/* Public Routes */}
                 <Route path="/login" element={<Register />} />
                 <Route path="/register" element={<Register />} />
-                <Route path="/verify" element={<VerifyAuth />} />
+
 
                 {/* Protected Routes */}
+                <Route path="/onboarding" element={<ProtectedRoute requireOnboarding={false}><Onboarding /></ProtectedRoute>} />
                 <Route path="/" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+
                 <Route path="/connections" element={<ProtectedRoute><ConnectionList /></ProtectedRoute>} />
                 <Route path="/connections/:id" element={<ProtectedRoute><ConnectionDetail /></ProtectedRoute>} />
                 <Route path="/connections/:id/edit" element={<ProtectedRoute><EditConnection /></ProtectedRoute>} />
@@ -59,8 +74,8 @@ function App() {
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
             </div>
+            <Toast />
           </Router>
-          <Toast />
         </DataProvider>
       </ToastProvider>
     </AuthProvider>

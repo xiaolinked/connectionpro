@@ -160,9 +160,7 @@ const Settings = () => {
                 </div>
 
                 <div className="form-group" style={{ marginBottom: '1rem' }}>
-                    <label style={{ color: '#dc2626', fontWeight: '500' }}>
-                        Type <strong>DELETE</strong> to confirm
-                    </label>
+
                     <input
                         type="text"
                         value={deleteConfirmation}

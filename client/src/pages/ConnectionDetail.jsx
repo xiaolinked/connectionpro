@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link, useParams } from 'react-router-dom'; // Ensure Link is imported
 import { useData } from '../context/DataContext';
 import { api } from '../services/api';
-import { ArrowLeft, Building, Mail, Target, Calendar, MessageSquare, Tag, Trash2, MapPin, Handshake, Info, Clock, PenTool } from 'lucide-react';
+import { ArrowLeft, Building, Mail, Target, Calendar, MessageSquare, Tag, Trash2, MapPin, Handshake, Info, Clock, PenTool, Plus } from 'lucide-react';
 
 const ConnectionDetail = () => {
     const { id } = useParams();
@@ -15,9 +15,16 @@ const ConnectionDetail = () => {
     const [connectionLogs, setConnectionLogs] = useState([]);
     const [logsLoading, setLogsLoading] = useState(true);
 
+    // Dynamic interaction types
+    const [availableTypes, setAvailableTypes] = useState(['Meeting', 'Call', 'Email', 'Social', 'Other']);
+    const [customTypeInput, setCustomTypeInput] = useState('');
+    const [showCustomTypeInput, setShowCustomTypeInput] = useState(false);
+
     useEffect(() => {
-        const fetchLogs = async () => {
+        const fetchData = async () => {
             if (!id) return;
+
+            // 1. Fetch Logs
             setLogsLoading(true);
             try {
                 const data = await api.getLogsByConnection(id);
@@ -27,15 +34,29 @@ const ConnectionDetail = () => {
             } finally {
                 setLogsLoading(false);
             }
+
+            // 2. Fetch Interaction Tags
+            try {
+                const tagsData = await api.getTags('interaction');
+                // Structure: { interactionType: { options: [...] }, custom: { options: [...] } }
+                const standard = tagsData.interactionType?.options || [];
+                const custom = tagsData.custom?.options || [];
+                // Merge and dedup
+                const allTypes = [...new Set([...standard, ...custom])];
+                if (allTypes.length > 0) {
+                    setAvailableTypes(allTypes);
+                }
+            } catch (err) {
+                console.error("Failed to load interaction tags", err);
+            }
         };
-        fetchLogs();
+        fetchData();
     }, [id]);
 
     const [newLog, setNewLog] = useState({
         date: new Date().toISOString().split('T')[0],
-        type: 'meeting', // meeting, email, call, social
-        notes: '',
-        tags: ''
+        type: 'Meeting', // Default to first proper Case
+        notes: ''
     });
 
     if (!connection) {
@@ -60,7 +81,8 @@ const ConnectionDetail = () => {
             const createdLog = await addLog({
                 connectionId: id,
                 ...newLog,
-                tags: newLog.tags.split(',').map(t => t.trim()).filter(Boolean)
+                // Send the type as a tag so backend persists it if custom
+                tags: [newLog.type]
             });
             // Add to local logs state so it appears immediately
             if (createdLog) {
@@ -68,12 +90,26 @@ const ConnectionDetail = () => {
             }
             setNewLog({
                 date: new Date().toISOString().split('T')[0],
-                type: 'meeting',
-                notes: '',
-                tags: ''
+                type: newLog.type, // Keep last used type? Or reset? Let's keep it.
+                notes: ''
             });
         } catch (err) {
             console.error("Failed to add log", err);
+        }
+    };
+
+    const addCustomType = () => {
+        const val = customTypeInput.trim();
+        if (val) {
+            // Capitalize first letter strictly? Or just take as is? 
+            // Let's capitalize first for consistency if standard ones are capitalized.
+            const formatted = val.charAt(0).toUpperCase() + val.slice(1);
+            if (!availableTypes.includes(formatted)) {
+                setAvailableTypes(prev => [...prev, formatted]);
+            }
+            setNewLog(prev => ({ ...prev, type: formatted }));
+            setCustomTypeInput('');
+            setShowCustomTypeInput(false);
         }
     };
 
@@ -195,6 +231,7 @@ const ConnectionDetail = () => {
                                             <span style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>{new Date(log.created_at).toLocaleDateString()}</span>
                                         </div>
                                         <p style={{ marginBottom: '0.75rem', whiteSpace: 'pre-wrap' }}>{log.notes}</p>
+                                        {/* Display tags if they exist (though now we mostly just use type as tag) */}
                                         {log.tags && log.tags.length > 0 && (
                                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                                                 {log.tags.map((t, i) => (
@@ -229,18 +266,71 @@ const ConnectionDetail = () => {
                             </div>
 
                             <div>
-                                <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Type</label>
-                                <select
-                                    value={newLog.type}
-                                    onChange={e => setNewLog({ ...newLog, type: e.target.value })}
-                                    style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-primary)' }}
-                                >
-                                    <option value="meeting">Meeting</option>
-                                    <option value="call">Call</option>
-                                    <option value="email">Email</option>
-                                    <option value="social">Social Media</option>
-                                    <option value="other">Other</option>
-                                </select>
+                                <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.5rem' }}>Type</label>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
+                                    {availableTypes.map(type => (
+                                        <button
+                                            key={type}
+                                            type="button"
+                                            onClick={() => setNewLog({ ...newLog, type: type })}
+                                            style={{
+                                                padding: '0.5rem 1rem',
+                                                borderRadius: '2rem',
+                                                border: newLog.type === type ? '2px solid var(--color-accent-primary)' : '1px solid var(--color-border)',
+                                                backgroundColor: newLog.type === type ? 'rgba(var(--color-accent-primary-rgb), 0.1)' : 'transparent',
+                                                color: newLog.type === type ? 'var(--color-accent-primary)' : 'var(--color-text-secondary)',
+                                                cursor: 'pointer',
+                                                fontSize: '0.9rem',
+                                                transition: 'all 0.2s',
+                                                fontWeight: newLog.type === type ? '600' : '400',
+                                                textTransform: 'capitalize'
+                                            }}
+                                        >
+                                            {type}
+                                        </button>
+                                    ))}
+
+                                    {!showCustomTypeInput ? (
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowCustomTypeInput(true)}
+                                            style={{
+                                                padding: '0.5rem 1rem',
+                                                borderRadius: '2rem',
+                                                border: '1px dashed var(--color-border)',
+                                                backgroundColor: 'transparent',
+                                                color: 'var(--color-text-secondary)',
+                                                cursor: 'pointer',
+                                                fontSize: '0.9rem',
+                                                display: 'flex',
+                                                alignItems: 'center'
+                                            }}
+                                        >
+                                            <Plus size={14} style={{ marginRight: '4px' }} /> Custom
+                                        </button>
+                                    ) : (
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                            <input
+                                                type="text"
+                                                autoFocus
+                                                value={customTypeInput}
+                                                onChange={e => setCustomTypeInput(e.target.value)}
+                                                onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addCustomType())}
+                                                onBlur={addCustomType}
+                                                placeholder="Type..."
+                                                style={{
+                                                    padding: '0.5rem 1rem',
+                                                    borderRadius: '2rem',
+                                                    border: '1px solid var(--color-accent-primary)',
+                                                    backgroundColor: 'var(--color-bg-primary)',
+                                                    color: 'var(--color-text-primary)',
+                                                    fontSize: '0.9rem',
+                                                    width: '100px'
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+                                </div>
                             </div>
 
                             <div>
@@ -252,17 +342,6 @@ const ConnectionDetail = () => {
                                     onChange={e => setNewLog({ ...newLog, notes: e.target.value })}
                                     placeholder="What did you discuss?"
                                     style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-primary)', resize: 'vertical' }}
-                                />
-                            </div>
-
-                            <div>
-                                <label style={{ display: 'block', fontSize: '0.875rem', marginBottom: '0.25rem' }}>Tags (comma separated)</label>
-                                <input
-                                    type="text"
-                                    value={newLog.tags}
-                                    onChange={e => setNewLog({ ...newLog, tags: e.target.value })}
-                                    placeholder="learning, referral, update"
-                                    style={{ width: '100%', padding: '0.5rem', borderRadius: 'var(--radius-sm)', border: '1px solid var(--color-border)', backgroundColor: 'var(--color-bg-primary)', color: 'var(--color-text-primary)' }}
                                 />
                             </div>
 

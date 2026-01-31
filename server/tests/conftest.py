@@ -6,7 +6,7 @@ from sqlmodel.pool import StaticPool
 from main import app
 from database import get_session
 from models import User, Connection, Log
-from auth_utils import create_access_token, create_magic_link_token
+from models import User, Connection, Log
 import uuid
 import datetime
 
@@ -55,7 +55,7 @@ def client_fixture(session):
 def test_user_fixture(session):
     """Create a test user in the database."""
     user = User(
-        id=str(uuid.uuid4()),
+        id="test_user_id",
         email="test@example.com",
         name="Test User",
         is_active=True,
@@ -83,18 +83,45 @@ def second_user_fixture(session):
     return user
 
 
+@pytest.fixture(name="mock_firebase_auth")
+def mock_firebase_auth_fixture(monkeypatch):
+    """Mock firebase_auth.verify_firebase_token to return a dummy user."""
+    def mock_verify(token):
+        if token == "valid_token":
+            return {
+                "uid": "test_user_id",
+                "email": "test@example.com",
+                "name": "Test User"
+            }
+        return None
+    
+    monkeypatch.setattr("main.verify_firebase_token", mock_verify)
+
+
 @pytest.fixture(name="auth_headers")
-def auth_headers_fixture(test_user):
-    """Generate valid auth headers for test_user."""
-    token = create_access_token(data={"sub": test_user.id})
-    return {"Authorization": f"Bearer {token}"}
+def auth_headers_fixture(test_user, mock_firebase_auth):
+    """Generate valid auth headers for test_user using mocked firebase."""
+    # Ensure test_user.id matches the mock uid if needed, or update test_user
+    # Actually, main.py looks up user by uid from token.
+    # So we need test_user.id to match "test_user_id"
+    # But test_user fixture creates a random UUID.
+    # Let's mock verify to return the test_user.id
+    return {"Authorization": "Bearer valid_token"}
 
 
 @pytest.fixture(name="second_auth_headers")
-def second_auth_headers_fixture(second_user):
+def second_auth_headers_fixture(second_user, monkeypatch):
     """Generate valid auth headers for second_user."""
-    token = create_access_token(data={"sub": second_user.id})
-    return {"Authorization": f"Bearer {token}"}
+    # We need a different token for the second user
+    def mock_verify_dynamic(token):
+        if token == "valid_token": # Default mock
+             return {"uid": "test_user_id", "email": "test@example.com"}
+        if token == "second_token":
+             return {"uid": second_user.id, "email": second_user.email}
+        return None
+        
+    monkeypatch.setattr("main.verify_firebase_token", mock_verify_dynamic)
+    return {"Authorization": "Bearer second_token"}
 
 
 @pytest.fixture(name="test_connection")

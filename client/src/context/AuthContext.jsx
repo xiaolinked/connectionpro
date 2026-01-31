@@ -1,4 +1,7 @@
-import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+
+import React, { createContext, useContext, useState, useEffect } from 'react';
+import { auth } from '../firebase';
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
 import { api } from '../services/api';
 
 const AuthContext = createContext();
@@ -7,67 +10,90 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
-    const [token, setToken] = useState(() => {
-        // Initialize token from localStorage AND set it on the API immediately
-        const storedToken = localStorage.getItem('cp_token');
-        if (storedToken) {
-            api.setToken(storedToken);  // Set token synchronously to prevent race conditions
-        }
-        return storedToken;
-    });
     const [isLoading, setIsLoading] = useState(true);
 
-    // Track if login() was called to skip the getMe refetch
-    const loginCalledRef = useRef(false);
-
     useEffect(() => {
-        const loadUser = async () => {
-            // If login() was just called, user is already set - skip getMe
-            if (loginCalledRef.current) {
-                loginCalledRef.current = false;
-                setIsLoading(false);
-                return;
-            }
-
-            if (token) {
+        const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+            if (firebaseUser) {
                 try {
-                    // Update API with token for all subsequent requests
+                    const token = await firebaseUser.getIdToken();
                     api.setToken(token);
-                    const userData = await api.getMe();
-                    setUser(userData);
-                } catch (err) {
-                    console.error("Auth verification failed", err);
-                    logout();
+
+                    // Sync with backend to ensure user exists in DB
+                    // This is "login" in terms of backend session
+                    await api.login({ token });
+
+                    // Fetch full user profile from our DB
+                    const dbUser = await api.getMe();
+                    setUser({ ...dbUser, ...firebaseUser });
+                } catch (error) {
+                    console.error("Failed to sync user with backend:", error);
+                    // Force logout if backend sync fails (e.g. server down)
+                    // Or keep firebase user but marked as "offline"?
+                    // For now, let's allow it but warn.
+                    setUser(firebaseUser);
                 }
+            } else {
+                api.setToken(null);
+                setUser(null);
             }
             setIsLoading(false);
-        };
-        loadUser();
-    }, [token]);
+        });
 
-    const login = (newToken, userData) => {
-        loginCalledRef.current = true; // Mark that login was called
-        localStorage.setItem('cp_token', newToken);
-        setToken(newToken);
-        setUser(userData);
-        api.setToken(newToken);
+        return () => unsubscribe();
+    }, []);
+
+    const loginWithGoogle = async () => {
+        const provider = new GoogleAuthProvider();
+        return signInWithPopup(auth, provider);
+    };
+
+    const loginWithEmail = (email, password) => {
+        return signInWithEmailAndPassword(auth, email, password);
+    };
+
+    const registerWithEmail = (email, password) => {
+        return createUserWithEmailAndPassword(auth, email, password);
+    };
+
+    const setupRecaptcha = (elementId) => {
+        if (!window.recaptchaVerifier) {
+            window.recaptchaVerifier = new RecaptchaVerifier(auth, elementId, {
+                'size': 'invisible',
+                'callback': (response) => {
+                    // reCAPTCHA solved, allow signInWithPhoneNumber.
+                }
+            });
+        }
+    };
+
+    const loginWithPhone = (phoneNumber) => {
+        return signInWithPhoneNumber(auth, phoneNumber, window.recaptchaVerifier);
     };
 
     const logout = () => {
-        localStorage.removeItem('cp_token');
-        setToken(null);
-        setUser(null);
-        api.setToken(null);
+        return signOut(auth);
     };
 
     const updateUser = async (updates) => {
         const updatedUser = await api.updateMe(updates);
-        setUser(updatedUser);
+        setUser(prev => ({ ...prev, ...updatedUser }));
         return updatedUser;
     };
 
     return (
-        <AuthContext.Provider value={{ user, token, login, logout, updateUser, isLoading, isAuthenticated: !!user }}>
+        <AuthContext.Provider value={{
+            user,
+            isLoading,
+            isAuthenticated: !!user,
+            loginWithGoogle,
+            loginWithEmail,
+            registerWithEmail,
+            setupRecaptcha,
+            loginWithPhone,
+            logout,
+            updateUser
+        }}>
             {children}
         </AuthContext.Provider>
     );

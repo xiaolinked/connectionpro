@@ -80,7 +80,11 @@ coverage/
 *.lcov
 
 # ===== Docker =====
-*.db-journal
+
+# ===== Firebase Secrets =====
+server/service-account*.json
+client/.env
+
 
 # ===== Misc =====
 .gemini/

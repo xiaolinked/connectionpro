@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
+import { useToast, TOAST_TYPES } from '../context/ToastContext';
 import { getConnectionStatus } from '../utils/reminders';
 import { Calendar, Clock, AlertCircle, Users, Check, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -53,8 +54,10 @@ const FollowUps = () => {
         { id: 'noSchedule', label: 'No Schedule', icon: Users, color: '#6b7280', count: categorized.noSchedule.length }
     ];
 
+    const { showToast } = useToast();
+
     const handleAction = async (e, conn, type) => {
-        e.preventDefault(); // Prevent navigation
+        e.preventDefault(); // Prevent navigation where button is inside link
         try {
             await addLog({
                 connection_id: conn.id,
@@ -62,8 +65,22 @@ const FollowUps = () => {
                 notes: type === 'skip' ? 'Skipped follow-up via dashboard' : 'Marked done via dashboard',
                 date: new Date().toISOString()
             });
+
+            // Show visual feedback with link
+            const actionText = type === 'skip' ? 'Skipped follow-up' : 'Logged interaction';
+            showToast(
+                <span>
+                    {actionText} with <strong>{conn.name}</strong>. {' '}
+                    <Link to={`/connections/${conn.id}`} style={{ textDecoration: 'underline', color: 'inherit' }}>
+                        View
+                    </Link>
+                </span>,
+                TOAST_TYPES.SUCCESS
+            );
+
         } catch (error) {
             console.error('Failed to update follow-up', error);
+            showToast('Failed to update follow-up', TOAST_TYPES.ERROR);
         }
     };
 
@@ -83,7 +100,7 @@ const FollowUps = () => {
                         <tr style={{ backgroundColor: 'var(--color-bg-secondary)', borderBottom: '1px solid var(--color-border)' }}>
                             <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Contact</th>
                             <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Last Contact</th>
-                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Since Last Connect</th>
+                            <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Frequency</th>
                             <th style={{ textAlign: 'left', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Status</th>
                             <th style={{ textAlign: 'right', padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)', fontWeight: '600' }}>Actions</th>
                         </tr>
@@ -110,10 +127,10 @@ const FollowUps = () => {
                                         </Link>
                                     </td>
                                     <td style={{ padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
-                                        {conn.last_contact ? new Date(conn.last_contact).toLocaleDateString() : 'Never'}
+                                        {conn.lastContact ? new Date(conn.lastContact).toLocaleDateString() : 'Never'}
                                     </td>
                                     <td style={{ padding: '1rem', fontSize: '0.875rem', color: 'var(--color-text-secondary)' }}>
-                                        {conn.last_contact ? `${daysDiff} days ago` : '-'}
+                                        Every {frequency} days
                                     </td>
                                     <td style={{ padding: '1rem', fontSize: '0.875rem' }}>
                                         {daysUntilDue !== null && (

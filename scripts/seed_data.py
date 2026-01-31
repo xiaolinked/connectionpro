@@ -4,6 +4,7 @@ import datetime
 import uuid
 import sys
 import time
+import os
 
 # Configuration
 API_URL = "http://localhost:8000"
@@ -178,26 +179,44 @@ def generate_log(connection_id, date_str):
 
 def register_and_login(name, email):
     print(f"Registering {email}...")
+    api_key = os.getenv("FIREBASE_API_KEY")
+    if not api_key:
+        print("Error: FIREBASE_API_KEY environment variable not set.")
+        print("Please run with: FIREBASE_API_KEY=... python scripts/seed_data.py")
+        sys.exit(1)
+
     try:
-        # 1. Register
-        reg_payload = {"email": email, "name": name}
-        res = requests.post(f"{API_URL}/auth/register", json=reg_payload)
+        # 1. Create User in Firebase directly via REST API
+        # This requires the Web API Key
+        url = f"https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={api_key}"
+        payload = {
+            "email": email,
+            "password": "TemporaryPassword123!",
+            "returnSecureToken": True
+        }
+        
+        res = requests.post(url, json=payload)
         res.raise_for_status()
-        data = res.json()
-        magic_link = data["magic_link"]
-        print(f"  Got magic link: {magic_link}")
         
-        # 2. Extract Token
-        token = magic_link.split("token=")[1]
+        firebase_data = res.json()
+        id_token = firebase_data["idToken"]
+        local_id = firebase_data["localId"]
         
-        # 3. Verify
-        verify_res = requests.post(f"{API_URL}/auth/verify?token={token}")
-        verify_res.raise_for_status()
-        verify_data = verify_res.json()
-        return verify_data["access_token"]
+        print(f"  Created Firebase User: {local_id}")
+        
+        # 2. Login to Backend to sync user
+        login_payload = {"token": id_token}
+        login_res = requests.post(f"{API_URL}/auth/login", json=login_payload)
+        login_res.raise_for_status()
+        
+        print(f"  Synced with Backend.")
+        
+        return id_token
         
     except Exception as e:
         print(f"Error registering: {e}")
+        if hasattr(e, 'response') and e.response is not None:
+            print(f"  Response: {e.response.text}")
         sys.exit(1)
 
 def main():

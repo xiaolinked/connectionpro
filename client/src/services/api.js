@@ -45,29 +45,10 @@ class ApiService {
     }
 
     // ===== AUTH METHODS =====
-    async checkEmail(email) {
-        return this.fetch(`${API_BASE_URL}/auth/check-email?email=${encodeURIComponent(email)}`);
-    }
-
-    async register(name, email) {
-        return this.fetch(`${API_BASE_URL}/auth/register`, {
-            method: 'POST',
-            body: JSON.stringify({ name, email }),
-        });
-    }
-
-    async sendLoginLink(email) {
+    async login(data) {
         return this.fetch(`${API_BASE_URL}/auth/login`, {
             method: 'POST',
-            body: JSON.stringify({ email }),
-        });
-    }
-
-    async verifyMagicLink(token) {
-        // Must send token in body as per backend expectation
-        return this.fetch(`${API_BASE_URL}/auth/verify`, {
-            method: 'POST',
-            body: JSON.stringify({ token }),
+            body: JSON.stringify(data),
         });
     }
 

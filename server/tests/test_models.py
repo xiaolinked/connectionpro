@@ -195,10 +195,12 @@ class TestUserSchemas:
             email="a@b.com",
             name="Alice",
             is_active=True,
+            is_onboarded=False,
             created_at=datetime(2024, 1, 1),
         )
         assert schema.id == "u1"
         assert schema.is_active is True
+        assert schema.is_onboarded is False
 
     def test_user_update_with_name(self):
         schema = UserUpdate(name="New Name")

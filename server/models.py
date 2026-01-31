@@ -23,16 +23,37 @@ class TagDefinition(SQLModel, table=True):
     is_custom: bool = Field(default=False)
 
 
+import uuid
+from sqlalchemy.dialects.postgresql import UUID
+
 class User(SQLModel, table=True):
-    id: Optional[str] = Field(default=None, primary_key=True)
-    email: str = Field(index=True, unique=True)
+    id: Optional[uuid.UUID] = Field(
+        default_factory=uuid.uuid4, 
+        primary_key=True,
+        index=True,
+        nullable=False
+    )
+    firebase_uid: str = Field(index=True, unique=True)
+    email: Optional[str] = Field(default=None, index=True, unique=True)
+    phone_number: Optional[str] = Field(default=None, index=True, unique=True)
     name: str
     is_active: bool = Field(default=True)
+    is_onboarded: bool = Field(default=False)
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+# ... (skip Connection)
+
+class UserRead(SQLModel):
+    id: str
+    email: str
+    name: str
+    is_active: bool
+    is_onboarded: bool
+    created_at: datetime
 
 class Connection(SQLModel, table=True):
     id: Optional[str] = Field(default=None, primary_key=True)
-    user_id: Optional[str] = Field(default=None, foreign_key="user.id", index=True)
+    user_id: Optional[uuid.UUID] = Field(default=None, foreign_key="user.id", index=True)
     name: str
     role: Optional[str] = None
     company: Optional[str] = None
@@ -243,12 +264,15 @@ class ConnectionUpdate(SQLModel):
 
 
 class UserCreate(SQLModel):
-    email: str
+    email: Optional[str] = None
+    phone_number: Optional[str] = None
     name: str
 
     @field_validator('email')
     @classmethod
     def validate_email(cls, v):
+        if v is None:
+            return v
         v = v.strip().lower()
         if not v or '@' not in v or len(v) > MAX_SHORT_FIELD:
             raise ValueError("Invalid email address")
@@ -261,14 +285,19 @@ class UserCreate(SQLModel):
 
 
 class UserRead(SQLModel):
-    id: str
-    email: str
+    id: uuid.UUID
+    firebase_uid: str
+    email: Optional[str] = None
+    phone_number: Optional[str] = None
     name: str
     is_active: bool
+    is_onboarded: bool
     created_at: datetime
+
 
 class UserUpdate(SQLModel):
     name: Optional[str] = None
+    is_onboarded: Optional[bool] = None
 
     @field_validator('name')
     @classmethod
@@ -278,10 +307,11 @@ class UserUpdate(SQLModel):
         return _validate_name(v)
 
 
+
 # Log Model for tracking interactions
 class Log(SQLModel, table=True):
     id: Optional[str] = Field(default=None, primary_key=True)
-    user_id: Optional[str] = Field(default=None, foreign_key="user.id", index=True)
+    user_id: Optional[uuid.UUID] = Field(default=None, foreign_key="user.id", index=True)
     connection_id: Optional[str] = Field(default=None, foreign_key="connection.id")
     type: str = Field(default="interaction")
     notes: str
@@ -297,7 +327,7 @@ class Log(SQLModel, table=True):
         self.tags_json = json.dumps(value)
 
 
-VALID_LOG_TYPES = {"interaction", "call", "email", "meeting", "social", "note"}
+
 
 
 class LogCreate(SQLModel):
@@ -310,9 +340,11 @@ class LogCreate(SQLModel):
     @field_validator('type')
     @classmethod
     def validate_type(cls, v):
-        v = v.strip().lower()
-        if v not in VALID_LOG_TYPES:
-            raise ValueError(f"Log type must be one of: {', '.join(sorted(VALID_LOG_TYPES))}")
+        v = v.strip()
+        if not v:
+            raise ValueError("Type cannot be empty")
+        if len(v) > MAX_SHORT_FIELD:
+            raise ValueError(f"Type must be {MAX_SHORT_FIELD} characters or fewer")
         return v
 
     @field_validator('notes')
